@@ -1,0 +1,823 @@
+<!-- reconciliation.component.html -->
+
+<!-- SVG Icon Definitions -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+    <path d="M7 10l5 5 5-5z" />
+  </symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24">
+    <path
+      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+  </symbol>
+  <symbol id="icon-calendar" viewBox="0 0 24 24">
+    <path
+      d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
+  </symbol>
+  <symbol id="icon-table" viewBox="0 0 24 24">
+    <path d="M3 3v18h18V3H3zm8 16H5v-6h6v6zm0-8H5V5h6v6zm8 8h-6v-6h6v6zm0-8h-6V5h6v6z" />
+  </symbol>
+  <symbol id="icon-chart" viewBox="0 0 24 24">
+    <path d="M3 13h2v7H3zm4-7h2v14H7zm4 3h2v11h-2zm4-6h2v17h-2z" />
+  </symbol>
+  <symbol id="icon-circle" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8" />
+  </symbol>
+  <symbol id="icon-eye" viewBox="0 0 24 24">
+    <path
+      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+  </symbol>
+  <symbol id="icon-zoom-in" viewBox="0 0 24 24">
+    <path
+      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+    <path d="M12 10h-2v-2H9v2H7v1h2v2h1v-2h2z" />
+  </symbol>
+  <symbol id="icon-zoom-out" viewBox="0 0 24 24">
+    <path
+      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+    <path d="M7 9h5v1H7z" />
+  </symbol>
+  <symbol id="icon-expand" viewBox="0 0 24 24">
+    <path
+      d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zM9 21l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zM21 15l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z" />
+  </symbol>
+  <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+  </symbol>
+  <symbol id="icon-cog" viewBox="0 0 24 24">
+    <path
+      d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.44.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.04.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+  </symbol>
+  <symbol id="icon-export" viewBox="0 0 24 24">
+    <path
+      d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" />
+  </symbol>
+</svg>
+<div class="cases-header">
+  <h2> Reconciliation</h2>
+
+</div>
+<div class="main-section-div">
+  <div class="container" [ngClass]="{'invoice-visible': isInvoiceVisible}">
+    <!-- Header section -->
+
+
+    <!-- Filter section -->
+    <div class="filter-section">
+      <!-- <div class="filter-group">
+          <div class="filter-label">Vendor Code:</div>
+          <div class="filter-input">
+            <input type="text" [(ngModel)]="companyCode" readonly />
+
+            <svg class="svg-icon">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Vendor Name:</div>
+          <div class="filter-input">
+            <input type="text" [(ngModel)]="supplier" placeholder="Enter supplier" />
+            <svg class="svg-icon">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div> -->
+      <div class="filter-group">
+        <div class="filter-label">Purchase Order No:</div>
+        <div class="filter-input">
+          <input type="text" [(ngModel)]="purchasingDocument" placeholder="Enter document number"
+            (keyup)="filteredDocuments()" />
+          <svg class="svg-icon">
+            <use xlink:href="#icon-search"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">From Date:</div>
+        <div class="filter-input">
+          <input type="date" [(ngModel)]="postingDate" placeholder="Select date" />
+          <svg class="svg-icon">
+            <use xlink:href="#icon-calendar"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">To Date:</div>
+        <div class="filter-input">
+          <input type="date" [(ngModel)]="postingDate_1" placeholder="Select date" />
+          <svg class="svg-icon">
+            <use xlink:href="#icon-calendar"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="filter-group">
+        <button class="btn-primary" style="position: relative;
+    top: 22px;
+    width: 90px;" (click)="filterDatewise()">Submit</button>
+      </div>
+      <!-- <div class="filter-group">
+          <div class="filter-label">Rule Engine:</div>
+          <div class="smart-facts-dropdown" (click)="toggleDropdown('smartFacts')">
+            <span>{{ smartFactsFilter }}</span>
+            <svg class="svg-icon">
+              <use xlink:href="#icon-chevron-down"></use>
+            </svg>
+          </div>
+
+
+          <div class="dropdown-menu" *ngIf="activeDropdown === 'smartFacts'">
+            <div class="dropdown-item" *ngFor="let option of smartFactOptions">
+              <input type="checkbox" [checked]="option.checked"
+                     (change)="toggleSmartFactOption(option.id)" class="checkbox" />
+              <span>{{ option.text }}</span>
+            </div>
+          </div>
+        </div> -->
+    </div>
+
+    <!-- Content section - Chart -->
+    <div class="content-section">
+      <div class="filter-section">
+        <!-- <div class="filter-group">
+          <div class="filter-label">PO Date:</div>
+          <div class="filter-input">
+            <input type="text" [(ngModel)]="postingDate" placeholder="Select date" />
+            <svg class="svg-icon">
+              <use xlink:href="#icon-calendar"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">PO Date:</div>
+          <div class="filter-input">
+            <input type="text" [(ngModel)]="postingDate" placeholder="Select date" />
+            <svg class="svg-icon">
+              <use xlink:href="#icon-calendar"></use>
+            </svg>
+          </div>
+        </div> -->
+        <!-- <div class="filter-group">
+          <div class="filter-label">Rule Engine:</div>
+          <select name="cars" id="cars">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>
+        </div> -->
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-header">
+          <div class="chart-title">Company Code / Status</div>
+        </div>
+        <div class="chart-container">
+          <div echarts [options]="chartOptions" style="height: 250px; width: 100%;" (chartClick)="onChartClick($event)">
+          </div>
+
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-color blue"></div>
+            <span>Initial (00)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color orange"></div>
+            <span>Perform Write-off (6A)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color green"></div>
+            <span>Correction of Invoice Expected (48)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content section - Table -->
+    <div class="content-section">
+      <div class="content-header">
+        <div class="header-title">
+          Purchasing Document Items ({{ get_invoice_po_details_data_filter_value?.length }})
+          <span style="margin-left: 12px; color: #5925DC; display: flex; align-items: center;">
+            GR/IR -QTY Diff
+            <svg class="svg-icon" style="margin-left: 6px;">
+              <use xlink:href="#icon-chevron-down"></use>
+            </svg>
+          </span>
+        </div>
+        <div class="content-controls">
+
+          <div class="control-btn">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-export"></use>
+            </svg>
+            <svg class="svg-icon" style="width: 10px; height: 10px; margin-left: 4px;">
+              <use xlink:href="#icon-chevron-down"></use>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="table-section">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <!-- <th class="checkbox-cell">
+                    <input type="checkbox" class="checkbox" />
+                  </th> -->
+                <th>Po Date</th>
+                <th>Purchasing Document</th>
+                <!-- <th>Purch...</th> -->
+                <th>PO Quantity</th>
+                <th>Invoice Quantity</th>
+                <th>Balance Quantity (Goods)</th>
+                <th>Invoice Amount</th>
+                <!-- <th>Supplier</th> -->
+                <th>Action</th>
+              </tr>
+            </thead>
+            <!-- {{get_invoice_po_match_data | json}} -->
+            <tbody>
+              <tr *ngFor="let row of get_invoice_po_details_data , let i = index">
+                <!-- <td class="checkbox-cell">
+                    <input type="checkbox" class="checkbox" />
+                  </td> -->
+                <td>{{ row.po_date}}</td>
+                <td>{{ row.po_ref }}</td>
+                <td>{{ row.po_lineitem_count }} PC</td>
+                <td>{{ row.invoice_lineitem_count }} PC</td>
+                <td [ngClass]="{'balance-negative': (row.po_lineitem_count - row.invoice_lineitem_count) < 0}">
+                  {{ row.po_lineitem_count - row.invoice_lineitem_count }}
+                </td>
+
+                <td>{{ row.invoice_total }} .00 RS</td>
+                <!-- <td>{{ row.supplier }}</td> -->
+                <td (click)="toggleInvoiceInfo(row)">
+                  <svg class="svg-icon expand-icon">
+                    <use xlink:href="#icon-chevron-right"></use>
+                  </svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="invoice-info" *ngIf="isInvoiceVisible">
+    <div class="div-main">
+      <!-- Document Header -->
+      <div class="document-header">
+        <div class="document-number">
+          {{invoiceData.batch_id}} <span class="document-tag">{{invoiceData.invoice_lineitem_count}}</span>
+        </div>
+        <div class="document-actions">
+          <div class="process-item">Process Item</div>
+          <button class="action-button" title="External Link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </button>
+          <button class="action-button" title="Fullscreen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+              </path>
+            </svg>
+          </button>
+          <button class="action-button" title="Close" (click)="toggleInvoiceInfoClose()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="info-section">
+        <div class="info-grid">
+          <div class="info-field">
+            <div class="field-label">Vendor Code:</div>
+            <div class="field-value">{{invoiceData.company_name}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Ordered Quantity:</div>
+            <div class="field-value">{{invoiceData.invoice_lineitem_count}} PC</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Vendor Name:</div>
+            <div class="field-value">{{invoiceData.company_name}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Balance:</div>
+            <div class="field-value field-amount negative"> <span class="currency">Rs</span>
+              {{invoice_po_details_by_id_data?.po_total -
+              invoice_po_details_by_id_data?.invoice_total | number:'1.2-2'}} </div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Buying Agent:</div>
+            <div class="field-value">-</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Requisitioner:</div>
+            <div class="field-value">—</div>
+          </div>
+        </div>
+        <div class="info-grid">
+
+          <div class="info-field">
+            <div class="field-label">MSME:</div>
+            <div class="field-value">{{invoiceData?.udyam_reg}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Status:</div>
+            <div class="field-value">-</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Payment Terms</div>
+            <div class="field-value">{{invoiceData?.payment_term}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Invoice Date:</div>
+            <div class="field-value">{{invoiceData.invoice_date}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Due Date</div>
+            <div class="field-value due_date">{{ getDueDate(invoiceData.invoice_date,invoiceData?.payment_term)}}</div>
+          </div>
+          <div class="info-field">
+            <div class="field-label">Processing Department:</div>
+            <div class="field-value">—</div>
+          </div>
+          <!-- <div class="info-field">
+            <div class="field-label">Root Cause:</div>
+            <div class="field-value">—</div>
+          </div> -->
+
+
+
+
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">Overview</div>
+        <!-- <div class="tab">Financial Accounting Open Items</div>
+      <div class="tab">Purchasing Document History</div>
+      <div class="tab">Notes</div>
+      <div class="tab">Action Log</div>
+      <div class="tab">Timeline</div> -->
+      </div>
+
+      <!-- Smart Facts Section -->
+      <!-- <div class="smart-facts-section">
+      <h2 class="section-title">Smart Facts</h2>
+      <div class="facts-list">
+          <div class="fact-item">Is Goods Receipt Goods Amount Surplus</div>
+          <div class="fact-item">Is Goods Receipt Goods Quantity Surplus</div>
+          <div class="fact-item">No Invoice Receipt Posted</div>
+      </div>
+  </div> -->
+      <div class="tabs">
+        <div class="tab" [ngClass]="{ 'active': !way_match_checklist_data_check_list }"
+          (click)="changethechecklist('potoInvoice')">PO to Invoice</div>
+        <div class="tab" [ngClass]="{ 'active': way_match_checklist_data_check_list }"
+          (click)="changethechecklist('invtoebill')">Invoice to Eway Bill</div>
+
+      </div>
+      <!-- <div class="filter-section">
+<div class="filter-group">
+
+          <select (change)="changethechecklist($event)">
+  <option value="potoInvoice">PO to Invoice</option>
+  <option value="invtoebill">Invoice to Ebill</option>
+</select>
+        </div>
+          </div> -->
+
+      <div *ngIf="!way_match_checklist_data_check_list">
+        <div class="content-section">
+          <div class="content-header">
+            <div class="header-title">
+              Item Check List
+
+
+              <!-- <span style="margin-left: 12px; color: #5925DC; display: flex; align-items: center;">
+
+          <svg class="svg-icon" style="margin-left: 6px;">
+            <use xlink:href="#icon-chevron-down"></use>
+          </svg>
+        </span> -->
+
+            </div>
+
+          </div>
+
+          <div class="table-section">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th>Field</th>
+                    <th>PO</th>
+                    <th>Invoice</th>
+                    <!-- <th>MRN</th> -->
+                    <!-- <th>Match?</th> -->
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of way_match_checklist_data; let i = index">
+                    <td>{{data.field_name}}</td>
+                    <td>{{data.po_present == 'Yes'? '✅': '❌'}}</td>
+                    <td>{{data.invoice_present == 'Yes'? '✅': '❌'}}</td>
+                    <!-- <td>{{data.mrn_present == 'Yes'? '✅': '❌'}}</td> -->
+                    <!-- <td>{{data.match_status}}</td> -->
+                    <td>{{data.notes}}</td>
+                    <!-- <td>{{get_metadata_checklist_data[i].field_name}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td> -->
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+        <div class="content-section">
+          <div class="content-header">
+            <div class="header-title">
+              Purchasing Document Items ({{ get_invoice_po_details_data_filter_value.length }})
+              <span style="margin-left: 12px; color: #5925DC; display: flex; align-items: center;">
+                GR/IR -QTY Diff
+                <svg class="svg-icon" style="margin-left: 6px;">
+                  <use xlink:href="#icon-chevron-down"></use>
+                </svg>
+              </span>
+            </div>
+            <div class="content-controls">
+              <div class="control-btn">Process Item</div>
+              <div class="control-btn">Perform Write-Off</div>
+              <div class="control-btn active">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-eye"></use>
+                </svg>
+              </div>
+              <div class="control-btn">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-search"></use>
+                </svg>
+              </div>
+              <div class="control-btn">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-cog"></use>
+                </svg>
+              </div>
+              <div class="control-btn">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-export"></use>
+                </svg>
+                <svg class="svg-icon" style="width: 10px; height: 10px; margin-left: 4px;">
+                  <use xlink:href="#icon-chevron-down"></use>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-section">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+
+                    <th>Purchase Item</th>
+                    <th>Invoice Item</th>
+                    <th style="width: 100px;">PO Qty</th>
+                    <th style="width: 100px;">Invoice Qty</th>
+                    <!-- <th>PO Unit Price</th>
+              <th>Invoice Price</th> -->
+                    <th style="width: 100px;">PO Total Value</th>
+                    <th style="width: 100px;">Invoice Total value</th>
+
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <!-- {{get_invoice_po_match_data | json}} -->
+                <tbody>
+                  <tr *ngFor="let doc of get_invoice_po_match_data">
+
+                    <td>{{ doc.po_item }}</td>
+                    <td>{{ doc.invoice_item }} </td>
+                    <td>{{ doc.po_qty }}</td>
+                    <td>{{ doc.invoice_qty }}</td>
+                    <!-- <td>
+                {{ doc.po_unit_price }}
+              </td>
+              <td>{{ doc.total_taxable_amount }}</td> -->
+                    <td>{{ doc.po_total_value }}</td>
+                    <td>{{ doc.invoice_total_value }}</td>
+                    <td [ngClass]="{'balance-negative': doc.match_status == 'Not Match'}">
+                      <span>{{doc.match_status}}</span>
+                      <br> <small>{{doc.match_status == 'Not Match' ? (doc.mismatch_reason) : '' }}<br
+                          *ngIf="doc.match_status == 'Not Match'"> Item Description :
+                        <b>({{doc.item_name_match_percent}} %)</b></small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Amounts Section -->
+        <div class="amounts-section">
+          <div class="section-header">
+            <h3>Amounts</h3>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>PO Value</th>
+                <th></th>
+                <th></th>
+                <th>Invoice Receipts</th>
+                <th></th>
+                <th>Balance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [ngClass]="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total == 0 ? 'status-green' : 'status-red'" -->
+              <tr>
+                <td><span class="status-indicator" [ngClass]="true ? 'status-green' : 'status-red'"></span>Goods
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.po_total}}</td>
+                <td>₹</td>
+                <td>
+                  <div class="comparison-operator">
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total === 0">
+                     
+                    </span> -->
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total > 0">
+                      > 
+                    </span> -->
+                    =
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total < 0">
+
+                      &lt;
+                    </span> -->
+                  </div>
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.invoice_total}}</td>
+                <td>₹</td>
+                <td class="text-right negative">{{invoice_po_details_by_id_data?.po_total -
+                  invoice_po_details_by_id_data?.invoice_total | number:'1.2-2'}}</td>
+                <td>₹</td>
+              </tr>
+              <tr>
+                <td><span class="status-indicator status-green"></span>Delivery Costs</td>
+                <td class="text-right">0.00</td>
+                <td>₹</td>
+                <td>
+                  <div class="comparison-operator">=</div>
+                </td>
+                <td class="text-right">0.00</td>
+                <td>₹</td>
+                <td class="text-right">0.00</td>
+                <td>₹</td>
+              </tr>
+
+              <!-- [ngClass]="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total == 0 ? 'status-green' : 'status-red'" -->
+              <tr>
+                <td><span class="status-indicator" [ngClass]="true? 'status-green' : 'status-red'"></span>Overall
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.po_total}}</td>
+                <td>₹</td>
+                <td>
+                  <div class="comparison-operator">
+                    =
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total === 0">
+                     
+                    </span> -->
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total > 0">
+                      >
+                    </span> -->
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_total - invoice_po_details_by_id_data?.invoice_total < 0">
+
+                      &lt;
+                    </span> -->
+                  </div>
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.invoice_total}}</td>
+                <td>₹</td>
+                <td class="text-right negative">{{ invoice_po_details_by_id_data?.po_total -
+                  invoice_po_details_by_id_data?.invoice_total | number:'1.2-2' }}
+                </td>
+                <td>₹</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Quantities Section -->
+        <div class="quantities-section">
+          <div class="section-header">
+            <h3>Quantities</h3>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>PO Qty</th>
+                <th></th>
+                <th></th>
+                <th>Invoice Receipts</th>
+                <th></th>
+                <th>Balance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-indicator"
+                    [ngClass]="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count == 0 ? 'status-green' : 'status-red'"></span>Goods
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.po_lineitem_count}}</td>
+                <td>PC</td>
+                <td>
+                  <div class="comparison-operator">
+                    =
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count === 0">
+                      =
+                    </span> -->
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count > 0">
+                      > 
+                    </span> -->
+
+                    <!-- <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count < 0">
+
+                      &lt;
+                    </span> -->
+                  </div>
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.invoice_lineitem_count}}</td>
+                <td>PC</td>
+                <td class="text-right negative">{{invoice_po_details_by_id_data?.po_lineitem_count -
+                  invoice_po_details_by_id_data?.invoice_lineitem_count}}</td>
+                <td>PC</td>
+              </tr>
+              <!-- <tr>
+                  <td><span class="status-indicator status-green"></span>Delivery Costs</td>
+                  <td class="text-right">0.000</td>
+                  <td>PC</td>
+                  <td>
+                      <div class="comparison-operator">=</div>
+                  </td>
+                  <td class="text-right">0.000</td>
+                  <td>PC</td>
+                  <td class="text-right">0.000</td>
+                  <td>PC</td>
+              </tr> -->
+              <tr>
+                <td><span class="status-indicator"
+                    [ngClass]="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count == 0 ? 'status-green' : 'status-red'"></span>Overall
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.po_lineitem_count}}</td>
+                <td>PC</td>
+                <td>
+                  <div class="comparison-operator">
+                    <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count === 0">
+                      =
+                    </span>
+
+                    <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count > 0">
+                      > <!-- PO is greater -->
+                    </span>
+
+                    <span
+                      *ngIf="invoice_po_details_by_id_data?.po_lineitem_count - invoice_po_details_by_id_data?.invoice_lineitem_count < 0">
+
+                      &lt;<!-- Invoice is greater -->
+                    </span>
+                  </div>
+                </td>
+                <td class="text-right">{{invoice_po_details_by_id_data?.invoice_lineitem_count}}</td>
+                <td>PC</td>
+                <td class="text-right negative">{{invoice_po_details_by_id_data?.po_lineitem_count -
+                  invoice_po_details_by_id_data?.invoice_lineitem_count}}</td>
+                <td>PC</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="quantities-section">
+          <button class="btn-primary" style="position: relative;
+    left: 83%;">
+            <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg> Generate MRN
+          </button>
+        </div>
+
+      </div>
+
+      <div *ngIf="way_match_checklist_data_check_list">
+        <div class="content-section">
+          <div class="content-header">
+            <div class="header-title">
+              Item Check List
+
+
+              <!-- <span style="margin-left: 12px; color: #5925DC; display: flex; align-items: center;">
+
+          <svg class="svg-icon" style="margin-left: 6px;">
+            <use xlink:href="#icon-chevron-down"></use>
+          </svg>
+        </span> -->
+
+            </div>
+
+          </div>
+
+          <div class="table-section">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead style="background-color: #f2f2f2;">
+                  <tr>
+                    <th>Field</th>
+                    <th>Invoice</th>
+                    <th>Ewaybill</th>
+                    <!-- <th>MRN</th> -->
+                    <!-- <th>Match?</th> -->
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr *ngFor="let data of ebilling_way_match_checklist_data; let i = index">
+                    <td>{{data.field_name}}</td>
+                    <td>{{data.invoice_value}}</td>
+                    <td>{{data.ewaybill_value }}</td>
+                    <!-- <td>{{data.mrn_present == 'Yes'? '✅': '❌'}}</td> -->
+                    <!-- <td>{{data.match_status}}</td> -->
+                    <!-- <td>{{ (data.match_status == 'Exact Match' or data.match_status == 'Close Match') ? '✅' : '❌' }}</td> -->
+                    <td>
+                      <span *ngIf="data.match_status === 'Exact Match' || data.match_status === 'Close Match'">✅</span>
+                      <span *ngIf="data.match_status !== 'Exact Match' && data.match_status !== 'Close Match'">❌</span>
+                    </td>
+                    <!-- <td>{{get_metadata_checklist_data[i].field_name}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td>
+              <td>{{get_metadata_checklist_data[i].}}</td> -->
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!-- Financial Accounting Open Items Section -->
+      <!-- <div class="financial-section">
+      <h2>Financial Accounting Open Items</h2>
+  </div> -->
+    </div>
+  </div>
+
+</div>

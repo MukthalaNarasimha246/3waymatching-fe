@@ -1,0 +1,46 @@
+  <div class="cases-header">
+    <button class="btn-primary" (click)="toggleAddCase()">
+      <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg> Create New Case
+    </button>
+  </div>
+
+  <section class="cards-section">
+    <img [src]="imageurl" alt="PepsiCo Logo" class="pepsico-logo" width="70%" *ngIf="imageurl_boolean">
+</section>
+
+
+<div class="side-panel" [class.active]="isAddCaseOpen">
+  <div class="side-panel-header">
+    <h3>Upload Image</h3>
+    <button class="btn-close" (click)="closeAddCase()">
+      <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <form  (ngSubmit)="onSubmit()">
+    <div class="side-panel-content">
+      <!-- Form Fields -->
+      <div class="form-group">
+        <label>File<span class="required">*</span></label>
+        <input type="file" placeholder="Enter Title" formControlName="name" accept="image/*" (change)="onFileSelected($event)">
+      </div>
+
+   
+
+      <div class="form-actions">
+        <button class="btn-submit" >
+          <svg class="icon-sm" viewBox="0 0 24 24" width="16" height="16">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg> Upload
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

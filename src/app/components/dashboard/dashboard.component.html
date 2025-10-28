@@ -1,0 +1,317 @@
+<!-- app.component.html -->
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <div class="dropdown-wrapper">
+          <div class="filter-dropdown primary" (click)="toggleDropdown('standardView')">
+            <div class="dropdown-label">Standard *</div>
+            <div class="dropdown-icon">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="dropdown-menu header-dropdown" [class.show]="activeDropdown === 'standardView'">
+            <div class="dropdown-item" [class.selected]="selectedView === 'Standard'"
+                 (click)="selectView('Standard')">Standard</div>
+            <div class="dropdown-item" [class.selected]="selectedView === 'Extended'"
+                 (click)="selectView('Extended')">Extended</div>
+            <div class="dropdown-item" [class.selected]="selectedView === 'Custom'"
+                 (click)="selectView('Custom')">Custom</div>
+          </div>
+        </div>
+      </div>
+      <div class="header-center">
+        <div class="filter-info">
+          Filtered By (1): {{ filterBy }}
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="header-btn">
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Card Grid -->
+    <div class="card-grid">
+      <!-- GR/IR Reconciliation Processing Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">GR/IR Reconciliation Processing</h2>
+          <p class="card-subtitle">Number of Purchasing Document Items</p>
+          <div class="card-value">66<span class="card-value-suffix">K</span></div>
+        </div>
+        <div class="card-content">
+          <div class="filter-control">
+            <div class="dropdown-wrapper">
+              <div class="filter-dropdown small" (click)="toggleDropdown('processingStep')">
+                <div class="dropdown-label">Grouped by Processing Step (Status)</div>
+                <div class="dropdown-icon">
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div class="dropdown-menu" [class.show]="activeDropdown === 'processingStep'">
+                <div class="dropdown-item" *ngFor="let option of processingStepOptions"
+                     [class.selected]="selectedProcessingStep === option"
+                     (click)="selectProcessingStep(option)">
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="chart-title">Items by Processing Step (Status)</p>
+          <div class="chart-container">
+            <div echarts [options]="grirChartOption" class="chart" (chartClick)="onChartClick($event)"></div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #5B9BD5;"></div>
+              <div class="legend-label">Initial</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #ED7D31;"></div>
+              <div class="legend-label">Perform Write-off</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #70AD47;"></div>
+              <div class="legend-label">Correction of Invoice Expected</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #C65911;"></div>
+              <div class="legend-label">Write-off completed successfully</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #7030A0;"></div>
+              <div class="legend-label">Request Completion of Delivery</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IR Amount Surplus Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">IR Amount Surplus</h2>
+          <p class="card-subtitle">Number of Purchasing Document Items</p>
+          <div class="card-value">634</div>
+        </div>
+        <div class="card-content">
+          <div class="filter-control">
+            <div class="dropdown-wrapper">
+              <div class="filter-dropdown small" (click)="toggleDropdown('supplier1')">
+                <div class="dropdown-label">Grouped by Supplier</div>
+                <div class="dropdown-icon">
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div class="dropdown-menu" [class.show]="activeDropdown === 'supplier1'">
+                <div class="dropdown-item" *ngFor="let option of supplierOptions"
+                     [class.selected]="selectedSupplier1 === option"
+                     (click)="selectSupplier1(option)">
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="chart-title">Items by Supplier</p>
+          <div class="chart-container">
+            <div echarts [options]="irSurplusChartOption" class="chart" (chartClick)="onChartClick($event)"></div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #5B9BD5;"></div>
+              <div class="legend-label">Mover Parts Inc.</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #ED7D31;"></div>
+              <div class="legend-label">Inland subcontractor A, SE</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #70AD47;"></div>
+              <div class="legend-label">Vendor V8007</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #C65911;"></div>
+              <div class="legend-label">Vendor V8004</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #7030A0;"></div>
+              <div class="legend-label">...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GR Amount Surplus Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">GR Amount Surplus</h2>
+          <p class="card-subtitle">Number of Purchasing Document Items</p>
+          <div class="card-value">760</div>
+        </div>
+        <div class="card-content">
+          <div class="filter-control">
+            <div class="dropdown-wrapper">
+              <div class="filter-dropdown small" (click)="toggleDropdown('supplier2')">
+                <div class="dropdown-label">Grouped by Supplier</div>
+                <div class="dropdown-icon">
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div class="dropdown-menu" [class.show]="activeDropdown === 'supplier2'">
+                <div class="dropdown-item" *ngFor="let option of supplierOptions"
+                     [class.selected]="selectedSupplier2 === option"
+                     (click)="selectSupplier2(option)">
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="chart-title">Items by Supplier</p>
+          <div class="chart-container">
+            <div echarts [options]="grSurplusChartOption" class="chart" (chartClick)="onChartClick($event)"></div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #5B9BD5;"></div>
+              <div class="legend-label">Inland subcontractor A, SE</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #ED7D31;"></div>
+              <div class="legend-label">Mover Parts Inc.</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #70AD47;"></div>
+              <div class="legend-label">General Supplier</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #C65911;"></div>
+              <div class="legend-label">Vendor V8002</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #7030A0;"></div>
+              <div class="legend-label">...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GR Amount Equals IR Amount Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">GR Amount Equals IR Amount</h2>
+          <p class="card-subtitle">Number of Purchasing Document Items</p>
+          <div class="card-value">65<span class="card-value-suffix">K</span></div>
+        </div>
+        <div class="card-content">
+          <div class="filter-control">
+            <div class="dropdown-wrapper">
+              <div class="filter-dropdown small" (click)="toggleDropdown('materialGroup')">
+                <div class="dropdown-label">Grouped by Material Group</div>
+                <div class="dropdown-icon">
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div class="dropdown-menu" [class.show]="activeDropdown === 'materialGroup'">
+                <div class="dropdown-item" *ngFor="let option of materialGroupOptions"
+                     [class.selected]="selectedMaterialGroup === option"
+                     (click)="selectMaterialGroup(option)">
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="chart-title">Items by Material Group</p>
+          <div class="chart-container">
+            <div echarts [options]="grIrEqualChartOption" class="chart" (chartClick)="onChartClick($event)"></div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #5B9BD5;"></div>
+              <div class="legend-label">Frame</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #ED7D31;"></div>
+              <div class="legend-label">Handle Bars</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #70AD47;"></div>
+              <div class="legend-label">Forks</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #C65911;"></div>
+              <div class="legend-label">Drive Train</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #7030A0;"></div>
+              <div class="legend-label">...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Financial Overview Cards -->
+    <div class="financial-overview">
+      <!-- Open FI Items Overview -->
+      <div class="card financial-card">
+        <div class="card-header">
+          <h2 class="card-title">Open FI Items Overview</h2>
+          <p class="card-subtitle">Number of Open Items</p>
+          <div class="card-value">{{ fiItemsCount }}</div>
+        </div>
+        <div class="card-content">
+          <div class="filter-control">
+            <div class="dropdown-wrapper">
+              <div class="filter-dropdown small" (click)="toggleDropdown('supplierFI')">
+                <div class="dropdown-label">Grouped by Supplier</div>
+                <div class="dropdown-icon">
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+              <div class="dropdown-menu" [class.show]="activeDropdown === 'supplierFI'">
+                <div class="dropdown-item" *ngFor="let option of supplierOptions"
+                     [class.selected]="selectedSupplierFI === option"
+                     (click)="selectSupplierFI(option)">
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Open Amount Overview -->
+      <div class="card financial-card">
+        <div class="card-content info-banner">
+          <p class="banner-text">
+            as well as where you stand for goods, receipts, invoices, seats
+          </p>
+        </div>
+      </div>
+
+      <!-- Open Amount Overview -->
+      <div class="card financial-card">
+        <div class="card-header">
+          <h2 class="card-title">Open Amount Overview</h2>
+          <p class="card-subtitle">Total | USD</p>
+          <div class="card-value">{{ fiOpenAmount }}</div>
+        </div>
+        <div class="card-content">
+          <p class="card-note">in Global Currency</p>
+        </div>
+      </div>
+
+      <!-- Balance Overview -->
+      <div class="card financial-card">
+        <div class="card-header">
+          <h2 class="card-title">Balance Overview (Debit & Credit)</h2>
+          <p class="card-subtitle">Total | USD</p>
+          <div class="card-value negative">{{ fiTotalUSD }}</div>
+        </div>
+        <div class="card-content">
+          <p class="card-note">in Global Currency</p>
+        </div>
+      </div>
+    </div>
+</div>

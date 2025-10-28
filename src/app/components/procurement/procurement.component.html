@@ -1,0 +1,395 @@
+<div class="app-container">
+  <div class="document-panel">
+        <div class="document-header">
+          <h2 class="document-title">
+            <svg class="svg-icon" style="color: var(--primary)">
+              <use xlink:href="#icon-document"></use>
+            </svg>
+            Processed Document
+          </h2>
+          <div class="document-actions">
+            <button class="icon-button">
+              <svg class="svg-icon">
+                <use xlink:href="#icon-pin"></use>
+              </svg>
+            </button>
+            <button class="icon-button">
+              <svg class="svg-icon">
+                <use xlink:href="#icon-external"></use>
+              </svg>
+            </button>
+            <button class="icon-button">
+              <svg class="svg-icon">
+                <use xlink:href="#icon-close"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- <div class="tools-bar">
+              <button class="tool-button">
+                  <svg class="svg-icon svg-icon--sm">
+                      <use xlink:href="#icon-copy"></use>
+                  </svg>
+                  Copy
+              </button>
+              <button class="tool-button">
+                  <svg class="svg-icon svg-icon--sm">
+                      <use xlink:href="#icon-download"></use>
+                  </svg>
+                  Download
+              </button>
+              <button class="tool-button">
+                  <svg class="svg-icon svg-icon--sm">
+                      <use xlink:href="#icon-print"></use>
+                  </svg>
+                  Print
+              </button>
+              <button class="tool-button">
+                  <svg class="svg-icon svg-icon--sm">
+                      <use xlink:href="#icon-share"></use>
+                  </svg>
+                  Share
+              </button>
+          </div> -->
+
+        <div class="document-content">
+          <!-- Document preview with page indicator -->
+          <div style="position: relative; margin-bottom: var(--spacing-lg)">
+            <!-- <img src="./../../../assets/images/26b4953c-3f98-461b-8c1d-d31ce0b56b82.png" alt="Document Header" class="document-image"> -->
+           <!-- {{image_path}} -->
+            <!-- <img *ngIf="activeTabs === 'mrn'"
+              [src]="image_path_mrn" alt="Document Header"
+              class="document-image" />
+            <img *ngIf="activeTabs === 'po'"
+              [src]="image_path_po" alt="Document Header"
+              class="document-image" /> -->
+              <!-- <canvas #canvas1 style="width: 100%;" ></canvas> -->
+            <!-- <img *ngIf="activeTabs === 'invoice'"
+              [src]="image_path_invoice" alt="Document Header"
+                class="document-image" /> -->
+                <!-- <div *ngIf="activeTabs === 'invoice'"> -->
+
+                  <!-- <canvas #canvas style="width: 100%;" ></canvas> -->
+                <!-- </div> -->
+
+<!-- /Users/fis/Documents/way-matching/way-matching/src/assets/output_images/BATCH_2025-06-24_10-52-58/1_Invoice_page2.png -->
+            <img
+              src="./../../../assets/output_images/BATCH_2025-06-24_10-52-58/1_Invoice_page2.png"
+              alt="Document Header" class="document-image" />
+            <!-- <div style="
+                position: absolute;
+                top: 16px;
+                left: 16px;
+                background-color: rgba(255, 255, 255, 0.9);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--primary);
+              ">
+              Page 1 of 3
+            </div> -->
+            <div class="preview-controls">
+              <button class="icon-button" style="background-color: white; box-shadow: var(--shadow-sm)">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-zoom-in"></use>
+                </svg>
+              </button>
+              <button class="icon-button" style="background-color: white; box-shadow: var(--shadow-sm)">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-expand"></use>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Reference information panel -->
+          <!-- <div class="reference-card">
+                  <div class="reference-header">REFERENCE INFORMATION</div>
+                  <div class="reference-items">
+                      <div class="reference-item">
+                          <div class="reference-label">Document ID</div>
+                          <div class="reference-value highlight">38536756497</div>
+                      </div>
+                      <div class="reference-item">
+                          <div class="reference-label">Date</div>
+                          <div class="reference-value">04/28/2019</div>
+                      </div>
+                      <div class="reference-item">
+                          <div class="reference-label">Amount</div>
+                          <div class="reference-value">€3,921,644.00</div>
+                      </div>
+                  </div>
+                  <div class="reference-divider"></div>
+                  <div class="reference-label">Customer</div>
+                  <div class="reference-value">HOPCOM</div>
+              </div> -->
+
+          <!-- Table section of document -->
+          <!-- <img src="/api/placeholder/400/200" alt="Document Table" class="document-image"> -->
+
+          <!-- Payment Details Summary -->
+          <!-- <div class="reference-card">
+                  <div class="reference-header">PAYMENT DETAILS</div>
+                  <div class="payment-details">
+                      <div class="payment-row">
+                          <div>Ref: 63030512304</div>
+                          <div style="font-weight: 500;">€8,516.85</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 41259400250</div>
+                          <div style="font-weight: 500;">€3,512.84</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 14632184025</div>
+                          <div style="font-weight: 500;">€5,158.13</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 71394822846</div>
+                          <div style="font-weight: 500;">€8,215.82</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 18672719256</div>
+                          <div style="font-weight: 500;">€9,251.91</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 75058732486</div>
+                          <div style="font-weight: 500;">€2,015.48</div>
+                      </div>
+                      <div class="payment-row">
+                          <div>Ref: 93699887390</div>
+                          <div style="font-weight: 500;">€2,545.41</div>
+                      </div>
+                      <div class="reference-divider"></div>
+                      <div class="payment-total">
+                          <div>Total</div>
+                          <div>€3,921,644.00</div>
+                      </div>
+                  </div>
+              </div> -->
+
+          <!-- Approval section -->
+          <div style="
+              text-align: center;
+              margin-top: var(--spacing-xl);
+              color: var(--text-secondary);
+              font-size: var(--font-sm);
+            ">
+            <div>Document processed successfully</div>
+            <div class="status-indicator">
+              <svg class="svg-icon svg-icon--sm" style="color: var(--success)">
+                <use xlink:href="#icon-check-circle"></use>
+              </svg>
+              <span style="margin-left: 4px">Validation complete</span>
+            </div>
+            <div style="margin-top: var(--spacing-md)">
+              <button class="btn btn-primary" style="margin: 0 auto">
+                <svg class="svg-icon svg-icon--sm">
+                  <use xlink:href="#icon-check"></use>
+                </svg>
+                Approve Document
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="main-panel">
+<div class="form-content">
+  <div class="form-container">
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary)">
+            <use xlink:href="#icon-list"></use>
+          </svg>
+          Invoice Details
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Invoice No</label>
+          <input type="text" class="form-control" [value]="mrnDetails?.['mrn_number']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Invoice Date</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+         <div class="form-group">
+          <label class="required">Seller GSTIN</label>
+          <input type="text" class="form-control" [value]="mrnDetails?.['mrn_number']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Seller Pan</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+ <div class="form-group">
+          <label class="required">Buyer GSTIN</label>
+          <input type="text" class="form-control" [value]="mrnDetails?.['mrn_number']">
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Buyer Name</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+         <div class="form-group">
+          <label class="required">Buyer Pan</label>
+          <input type="text" class="form-control" [value]="mrnDetails?.['mrn_number']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ship to GSTIN</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+         <div class="form-group">
+          <label>Ship to Name</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+         <div class="form-group">
+          <label>Sub total Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+         <div class="form-group">
+          <label>Discount Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+        <div class="form-group">
+          <label>CGST Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+        <div class="form-group">
+          <label>SGST Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+        <div class="form-group">
+          <label>IGST Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+        <div class="form-group">
+          <label>Cess Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+        <div class="form-group">
+          <label>Additianal Cess Amount</label>
+          <input type="text" class="form-control" [value]="mrnDetails['mrn_date']"  (input)="searchInImage($event)"
+                    (click)="onInputClick($event)">
+        </div>
+      </div>
+
+      <div class="form-row">
+
+      </div>
+
+    </div>
+
+
+    <div class="form-section" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary);">
+            <use xlink:href="#icon-attach"></use>
+          </svg>
+          Attachments
+          <div class="badge">1</div>
+        </div>
+        <div class="button-group" style="margin-top: 0;">
+          <button class="btn">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-upload"></use>
+            </svg>
+            Upload
+          </button>
+          <button class="btn">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-link"></use>
+            </svg>
+            Add Link
+          </button>
+        </div>
+      </div>
+
+      <div class="attachment-card">
+        <div class="attachment-preview">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-image"></use>
+          </svg>
+        </div>
+        <div class="attachment-info">
+          <div class="attachment-name">C6.png</div>
+          <div class="attachment-details">
+            <div><span style="color: var(--text-tertiary);">Size:</span> 337.13 KB</div>
+            <div><span style="color: var(--text-tertiary);">Date:</span> 13-07-2023 04:31 PM</div>
+            <div><span style="color: var(--text-tertiary);">Dimensions:</span> 1920 x 1080</div>
+          </div>
+        </div>
+        <div class="attachment-actions">
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-visibility"></use>
+            </svg>
+          </button>
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-download"></use>
+            </svg>
+          </button>
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-delete"></use>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn">Cancel</button>
+      <button class="btn">Reset</button>
+      <button class="btn btn-primary">
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-save"></use>
+        </svg>
+        Update
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+</div>
+
+
+

@@ -1,0 +1,128 @@
+
+
+  <div class="container">
+       <div class="cases-header">
+        <h2>{{image_duplicates_value?.duplicate_status == 'Similarity' ? 'Similarity' : 'Duplicate Similarity'}}</h2>
+
+    </div>
+
+    <!-- {{image_orginal_image}} -->
+    <div class="image-comparison">
+      <div class="image-column fade-in delay-1">
+        <h2 class="image-title">Reference Image</h2>
+        <div class="image-container">
+          <div class="image-wrapper">
+
+            <img [src]="image_orginal_image" alt="Original Image" class="image">
+
+            <div class="scan-effects">
+              <div class="scan-line" [class.active]="scanActive"></div>
+              <div class="scan-grid" [class.active]="scanActive"></div>
+              <div class="scan-overlay" [class.active]="scanActive"></div>
+              <div class="scan-pulse" [class.active]="scanActive"></div>
+
+              <div class="scan-points-container">
+                <div *ngFor="let point of scanPoints1" class="scan-point"
+                     [style.left.%]="point.x"
+                     [style.top.%]="point.y"
+                     [style.animation-delay.ms]="point.delay"></div>
+              </div>
+
+              <div class="scan-corner scan-corner-tl" [class.active]="scanActive" [style.animation-delay.ms]="300"></div>
+              <div class="scan-corner scan-corner-tr" [class.active]="scanActive" [style.animation-delay.ms]="400"></div>
+              <div class="scan-corner scan-corner-bl" [class.active]="scanActive" [style.animation-delay.ms]="500"></div>
+              <div class="scan-corner scan-corner-br" [class.active]="scanActive" [style.animation-delay.ms]="600"></div>
+
+              <div class="scan-data" [class.active]="scanActive">
+                ANALYZING... <span>{{scanProgress1}}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="image-label">{{this.image_duplicates_value?.reference_image}}</div>
+        </div>
+      </div>
+
+      <div class="image-column fade-in delay-2">
+        <h2 class="image-title">{{image_duplicates_value?.duplicate_status}}</h2>
+        <div class="image-container">
+          <div class="image-wrapper">
+            <img [src]="image_duplicates_image" alt="Duplicate Image" class="image">
+
+            <div class="scan-effects">
+              <div class="scan-line" [class.active]="scanActive" [style.animation-delay.ms]="500"></div>
+              <div class="scan-grid" [class.active]="scanActive" [style.animation-delay.ms]="500"></div>
+              <div class="scan-overlay" [class.active]="scanActive" [style.animation-delay.ms]="500"></div>
+              <div class="scan-pulse" [class.active]="scanActive" [style.animation-delay.ms]="500"></div>
+
+              <div class="scan-points-container">
+                <div *ngFor="let point of scanPoints2" class="scan-point"
+                     [style.left.%]="point.x"
+                     [style.top.%]="point.y"
+                     [style.animation-delay.ms]="point.delay"></div>
+              </div>
+
+              <div class="scan-corner scan-corner-tl" [class.active]="scanActive" [style.animation-delay.ms]="800"></div>
+              <div class="scan-corner scan-corner-tr" [class.active]="scanActive" [style.animation-delay.ms]="900"></div>
+              <div class="scan-corner scan-corner-bl" [class.active]="scanActive" [style.animation-delay.ms]="1000"></div>
+              <div class="scan-corner scan-corner-br" [class.active]="scanActive" [style.animation-delay.ms]="1100"></div>
+
+              <div class="scan-data" [class.active]="scanActive" [style.animation-delay.ms]="500">
+                ANALYZING... <span>{{scanProgress2}}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="image-label">{{this.image_duplicates_value?.target_image}}</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note fade-in delay-3">Note: identifying or measuring the likeness between two or more items, where those items are essentially the same or very similar. This can be applied to various fields</p>
+
+    <div class="similarity-metrics fade-in delay-4">
+      <div class="metric-card" *ngIf="image_duplicates_value?.duplicate_status != 'Similarity'">
+        <div class="meter-bg" [style.width.%]="metricValues.text"></div>
+        <div class="metric-title">Text Similarity</div>
+        <div class="metric-value-container">
+          <div class="metric-value">{{metricValues.text}}%</div>
+          <svg class="progress-ring" width="50" height="50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#f0f0f0" stroke-width="4"></circle>
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#5754ff" stroke-width="4"
+                    class="progress-ring-circle"
+                    [style.stroke-dasharray.px]="circleCircumference"
+                    [style.stroke-dashoffset.px]="calculateOffset(metricValues.text)"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <div class="metric-card" *ngIf="image_duplicates_value?.duplicate_status != 'Similarity'">
+        <div class="meter-bg" [style.width.%]="metricValues.image"></div>
+        <div class="metric-title">Image</div>
+        <div class="metric-value-container">
+          <div class="metric-value">{{metricValues.image}}%</div>
+          <svg class="progress-ring" width="50" height="50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#f0f0f0" stroke-width="4"></circle>
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#5754ff" stroke-width="4"
+                    class="progress-ring-circle"
+                    [style.stroke-dasharray.px]="circleCircumference"
+                    [style.stroke-dashoffset.px]="calculateOffset(metricValues.image)"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="meter-bg" [style.width.%]="metricValues.overall"></div>
+        <div class="metric-title">Status</div>
+        <div class="metric-value-container">
+          <div class="metric-value">{{this.image_duplicates_value?.duplicate_status}}</div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="remarks-section fade-in delay-5">
+      <h3 class="remarks-title">Remarks</h3>
+      <textarea class="remarks-input" placeholder="Notes...." [(ngModel)]="remarks"></textarea>
+
+      <button class="submit-button" (click)="onSubmit()">Submit</button>
+    </div>
+  </div>
