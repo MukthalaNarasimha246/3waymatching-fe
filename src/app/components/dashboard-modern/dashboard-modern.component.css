@@ -1,4 +1,3 @@
-
 /* Layout */
 .view-container {
   display: flex;
@@ -23,7 +22,8 @@
 }
 
 .side-nav.hidden {
-  transform: translateX(-100%); /* Hide sidebar when it's in 'hidden' state */
+  transform: translateX(-100%);
+  /* Hide sidebar when it's in 'hidden' state */
 }
 
 .logo {
@@ -74,7 +74,8 @@
 
 /* Hamburger Menu (Visible on smaller screens) */
 .hamburger {
-  display: none; /* Hidden by default */
+  display: none;
+  /* Hidden by default */
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
@@ -104,7 +105,8 @@
 
 /* When Sidebar is hidden */
 .dashboard-container.side-nav-hidden {
-  margin-left: 0; /* Adjust when the sidebar is hidden */
+  margin-left: 0;
+  /* Adjust when the sidebar is hidden */
 }
 
 /* Unified Header Section */
@@ -136,7 +138,8 @@
   margin-bottom: 10px;
 }
 
-.header-text h1, .header-text h3 {
+.header-text h1,
+.header-text h3 {
   margin: 0;
 }
 
@@ -166,7 +169,8 @@
   margin-bottom: 10px;
   width: 100%;
   box-sizing: border-box;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* full-width bottom border */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  /* full-width bottom border */
 }
 
 /* Individual Tab Option */
@@ -284,7 +288,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .dashboard-item {
@@ -327,7 +331,7 @@
   background-color: rgba(255, 0, 0, 0.2);
 }
 
-.chip-info-graph > .tiny-chart {
+.chip-info-graph>.tiny-chart {
   width: 124px;
   height: 24px;
   display: inline-block;
@@ -369,7 +373,8 @@
 
   /* Hamburger Menu Visible on Small Screens */
   .hamburger {
-    display: flex; /* Make hamburger visible */
+    display: flex;
+    /* Make hamburger visible */
   }
 
   /* Hide Nav Options on Mobile by Default */
@@ -393,11 +398,11 @@
 }
 
 
-.sub-hearder-main{
-      display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+.sub-hearder-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .comparison-label {

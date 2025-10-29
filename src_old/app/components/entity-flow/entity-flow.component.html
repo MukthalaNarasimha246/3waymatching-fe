@@ -1,0 +1,241 @@
+<div class="headr-top">
+  <h3>Project Chart</h3>
+  <div class="add-button">
+  </div>
+</div>
+<div class="orgchart">
+  <ul class="prime-list">
+    <li>
+      <div class="node">
+        <div class="employee-card">
+          <div class="department-info">
+               <h4 class="name"> Company/Entity</h4>
+          </div>
+          <div class="info-block">
+            <h3 class="job-title">{{entityid_value.name}}</h3>
+            <div class="personal-info">
+
+              <div class="info-wrap">
+                <h5 class="name">{{entityid_value.description}}</h5>
+                <!-- <h6 class="email">email</h6> -->
+                <span class="reportee-count" (click)="toggleOrgChart()">
+
+                  <span class="count"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 1V15M1 8H15" stroke="black" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="sub-list">
+        <li *ngFor="let entity of project_list"  >
+          <div class="node" >
+            <div class="employee-card">
+              <div class="department-info" (click)="navigatToClassificatio()">
+                <h4 class="name">Project</h4>
+              </div>
+              <div class="info-block">
+                <h3 class="job-title">{{entity.name}}</h3>
+                <div class="personal-info">
+
+                  <div class="info-wrap">
+                    <!-- <h5 class="name">username</h5> -->
+                    <h6 class="email">{{entity.description}}</h6>
+                    <span class="reportee-count" *ngIf="!entity.manager_id" (click)="project_manager_assign(entity)">
+
+                      <span class="count"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 1V15M1 8H15" stroke="black" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="node"  *ngIf="entity.manager_id">
+            <div class="employee-card">
+              <div class="department-info" (click)="navigatToClassificatio()">
+                <h4 class="name">Project Manager</h4>
+              </div>
+              <div class="info-block">
+                <h3 class="job-title">{{entity.manager.name}}</h3>
+                <div class="personal-info">
+
+                  <div class="info-wrap">
+                    <!-- <h5 class="name">{{entity.manager.name}}</h5> -->
+                    <h6 class="email">{{entity.manager.email}}</h6>
+                    <span class="reportee-count" (click)="project_card(entity)">
+
+                      <span class="count"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 1V15M1 8H15" stroke="black" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <ul class="sub-list">
+            <li *ngFor= "let userList of users[entity.id]">
+              <div class="node no-child">
+                <div class="employee-card">
+                  <div class="department-info">
+                    <h4 class="name">{{userList.name}}</h4>
+                  </div>
+                  <div class="info-block">
+                    <h3 class="job-title">{{userList.role}}</h3>
+                    <div class="personal-info">
+            <label class="switch">
+              <input
+                type="checkbox"
+                 [(ngModel)]="userList.is_project_active"
+                (change)="toggleStatus(userList)"
+               
+              />
+              <span class="slider round"></span>
+            </label>
+            <span class="status-text" [class.active]="userList.active">
+              {{ userList?.is_project_active ? 'Active' : 'Inactive' }}
+            </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </li>
+
+       
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="add-org-chart" *ngIf="showOrgChart">
+  <div class="docked-panel">
+    <div class="panel-header">
+      <div class="panel-title">Create Project</div>
+      <button class="close-button" (click)="toggleOrgChart()">✕</button>
+    </div>
+    <div class="panel-body">
+      <form [formGroup]="projectForm">
+        <div class="form-group">
+          <label class="form-label">Project Name</label>
+          <input type="text" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea type="text" class="form-control" formControlName="description"></textarea>
+        </div>
+       
+        <div class="button-group">
+          <input type="submit" class="btn btn-primary" value="Save" style="background-color: blue;"
+            (click)="onSubmit()">
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- {{showOrgChart_company}} -->
+
+<div class="add-org-chart" *ngIf="project_card_form">
+  <div class="docked-panel">
+    <div class="panel-header">
+      <div class="panel-title">Create users</div>
+      <button class="close-button" (click)="project_card()">✕</button>
+    </div>
+    <div class="panel-body">
+      <form [formGroup]="userForm">
+        <div class="form-group">
+          <label class="form-label">Exisiting User</label>
+          <select class="form-control"  (change)="onSelectChange($event)">
+   <ng-container *ngFor="let user of getAllUsesV">
+    <option *ngIf="user.role === 'user'" [value]="user.id">
+      {{ user.email }}
+    </option>
+  </ng-container>
+</select>
+        </div>
+       
+        
+        <div *ngIf="showDetials == false">
+<h4>or</h4>
+          <div class="form-group">
+            <label class="form-label">Name <span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email <span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" class="form-control" formControlName="password_hash">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Role <span class="required">*</span></label>
+            <!-- <input type="text" class="form-control" formControlName="mobile"> -->
+              <select class="form-control" formControlName="role" >
+            <option value="project_manager">Project_manager</option>
+            <option value="user">user</option>
+            <option value="client">client</option>
+          </select>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <input type="submit" class="btn btn-primary" value="Save" style="background-color: blue;" (click)="showDetials? existingUserSubmit(this.selected_user_exist?.id):onSubmitUser()">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="add-org-chart" *ngIf="is_manager_form_op">
+  <div class="docked-panel">
+    <div class="panel-header">
+      <div class="panel-title">Assign Project Managers</div>
+      <button class="close-button" (click)="project_manager_assign()">✕</button>
+    </div>
+    <div class="panel-body">
+      <form [formGroup]="userForm">
+        <div class="form-group">
+          <label class="form-label">Exisiting User</label>
+          <!-- <input type="text" class="form-control" formControlName="name"> -->
+        <select class="form-control" (change)="onSelectChangeProjectManagers($event)">
+  <ng-container *ngFor="let user of getAllUsesV">
+    <option *ngIf="user.role === 'project_manager'" [value]="user.id">
+      {{ user.email }}
+    </option>
+  </ng-container>
+</select>
+
+        </div>
+
+        <div class="button-group">
+          <input type="submit" class="btn btn-primary" value="Save" style="background-color: blue;" (click)="onSubmitAssignManagers()">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

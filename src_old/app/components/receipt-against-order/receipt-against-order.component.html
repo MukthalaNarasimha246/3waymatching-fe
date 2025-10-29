@@ -1,0 +1,269 @@
+<div class="form-content">
+  <div class="form-container">
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary)">
+            <use xlink:href="#icon-list"></use>
+          </svg>
+          RAO Details
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Rao Number</label>
+          <input type="text" class="form-control" [value]="raoDetails['rao_number']" />
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Rao Date</label>
+          <input type="date" class="form-control" [value]="raoDetails['rao_date']" />
+        </div>
+        <div class="form-group">
+          <label>PO Reference Number</label>
+          <input type="text" class="form-control" [value]="raoDetails['po_reference_number']" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Date (P.O. Date)</label>
+          <div class="currency-group">
+            <input type="text" class="form-control" [value]="raoDetails['po_date']">
+          </div>
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="required"> Ref. Bill (Supplier Invoice Number)</label>
+          <input type="text" class="form-control" [value]="raoDetails['ref_invoice_number']">
+          <div class="input-icon">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ref. Date (Supplier Invoice Date)</label>
+          <input type="text" class="form-control" [value]="raoDetails['ref_invoice_date']">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <!-- <label>45 Days from the data of Material Receipt</label> -->
+          <label>Document Title</label>
+          <div class="date-input-container">
+            <input type="text" class="form-control date-input" [value]="raoDetails['document_title']">
+          </div>
+        </div>
+        <div class="form-group">
+          <!-- <label>Remarks: General Materials</label> -->
+          <label>Remarks</label>
+          <textarea type="text" class="form-control" [value]="raoDetails['remarks']"></textarea>
+        </div>
+        <div class="form-group">
+          <div class="ghost-placeholder"></div>
+        </div>
+      </div>
+
+      <a href="#" class="show-more">
+        Show More
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-more-down"></use>
+        </svg>
+      </a>
+    </div>
+
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary)">
+            <use xlink:href="#icon-list"></use>
+          </svg>
+          RAO Line Items
+          <!-- {{ raoLineItem.length }} -->
+          <div class="badge">{{ raoLineItem.length }}</div>
+        </div>
+        <div class="select-container">
+          <select class="custom-select">
+            <option>Standard</option>
+            <option>Detailed</option>
+            <option>Summary</option>
+          </select>
+          <span class="select-arrow">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-dropdown"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="data-table-container" [style]="{'overflow': 'auto'}">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="checkbox-cell">
+                <input type="checkbox" class="custom-checkbox">
+              </th>
+              <!-- <th>PO Number</th> -->
+              <th>Product/Description</th>
+              <th>Engine No.</th>
+              <th>Chassis No</th>
+              <th>Serial No</th>
+              <th>Asset ID</th>
+              <th>Quantity</th>
+              <th>GST Rate</th>
+              <th>Net Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of raoLineItem">
+              <td class="checkbox-cell">
+                <input type="checkbox" class="custom-checkbox">
+              </td>
+              <!-- <td> {{row.po_number}} </td> -->
+              <td> {{row.item_name}} </td>
+              <td> {{row.engine_no}} </td>
+              <td> {{row.chasis_no}} </td>
+              <td> {{row.serial_no}} </td>
+              <td> {{row.asset_id}} </td>
+              <td> {{row.received_quantity}} </td>
+              <td> {{row.gst_rate}} </td>
+              <td> {{row.total_value}} </td>
+              <td>
+                <button class="icon-button" style="margin: -8px">
+                  <svg class="svg-icon">
+                    <use xlink:href="#icon-more"></use>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary)">
+            <use xlink:href="#icon-list"></use>
+          </svg>
+          Summary
+          <div class="badge">{{ raoSummaryLineItem.length }}</div>
+        </div>
+      </div>
+      <div class="data-table-container" [style]="{ overflow: 'auto' }">
+      </div>
+      <div *ngFor="let row of raoSummaryLineItem " style="margin-bottom: 20px;">
+        <table class="data-table" border="1" style="width: 100%; border-collapse: collapse;">
+          <tbody>
+            <tr>
+              <th>Total Quantity</th>
+              <td>{{ row.total_qty }}</td>
+            </tr>
+            <tr>
+              <th>Gross Amount</th>
+              <td>{{ row.gross_amount }} </td>
+            </tr>
+            <tr>
+              <th>Discount</th>
+              <td>{{ row.total_discount }} </td>
+            </tr>
+            <tr>
+              <th>Sub Total</th>
+              <td>{{ row.sub_total }} </td>
+            </tr>
+            <tr>
+              <th>GST Amount</th>
+              <td>{{ row.gst_amount }} </td>
+            </tr>
+            <tr>
+              <th>Total Value</th>
+              <td>{{ row.total_value }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-section" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="svg-icon" style="color: var(--primary);">
+            <use xlink:href="#icon-attach"></use>
+          </svg>
+          Attachments
+          <div class="badge">1</div>
+        </div>
+        <div class="button-group" style="margin-top: 0;">
+          <button class="btn">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-upload"></use>
+            </svg>
+            Upload
+          </button>
+          <button class="btn">
+            <svg class="svg-icon svg-icon--sm">
+              <use xlink:href="#icon-link"></use>
+            </svg>
+            Add Link
+          </button>
+        </div>
+      </div>
+
+      <div class="attachment-card">
+        <div class="attachment-preview">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-image"></use>
+          </svg>
+        </div>
+        <div class="attachment-info">
+          <div class="attachment-name">C6.png</div>
+          <div class="attachment-details">
+            <div><span style="color: var(--text-tertiary);">Size:</span> 337.13 KB</div>
+            <div><span style="color: var(--text-tertiary);">Date:</span> 13-07-2023 04:31 PM</div>
+            <div><span style="color: var(--text-tertiary);">Dimensions:</span> 1920 x 1080</div>
+          </div>
+        </div>
+        <div class="attachment-actions">
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-visibility"></use>
+            </svg>
+          </button>
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-download"></use>
+            </svg>
+          </button>
+          <button class="icon-button">
+            <svg class="svg-icon">
+              <use xlink:href="#icon-delete"></use>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn">Cancel</button>
+      <button class="btn">Reset</button>
+      <button class="btn btn-primary">
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-save"></use>
+        </svg>
+        Save
+      </button>
+    </div>
+  </div>
+</div>

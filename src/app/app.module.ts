@@ -28,11 +28,10 @@ import { MainDashboardComponent } from './main-dashboard/main-dashboard.componen
 import { ProcurementTableComponent } from './components/procurement-table/procurement-table.component';
 import { PepsicoComponent } from './components/pepsico/pepsico.component';
 import { LoaderComponent } from './components/loader/loader.component';
+
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 import { MarkdownModule } from 'ngx-markdown';
-
-
 
 @NgModule({
   declarations: [
@@ -62,7 +61,6 @@ import { MarkdownModule } from 'ngx-markdown';
   ],
   imports: [
     BrowserModule,
-
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
@@ -73,7 +71,6 @@ import { MarkdownModule } from 'ngx-markdown';
       echarts: () => import('echarts')
     }),
     MarkdownModule.forRoot()
-
 
   ],
 

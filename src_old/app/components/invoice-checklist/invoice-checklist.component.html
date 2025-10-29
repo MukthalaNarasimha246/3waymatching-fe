@@ -1,0 +1,429 @@
+<div class="container">
+  <div class="checklist-container">
+    <!-- <div class="checklist-logo">
+            <div class="logo-icon">D</div>
+            <div class="logo-text">Document AI</div>
+        </div> -->
+
+    <h1 class="checklist-title">Invoice Validation Checklist</h1>
+    <div class="checklist-subtitle">Invoice validation and processing system</div>
+
+    <div class="checklist-stats">
+      <div class="stat-item success">
+        <div class="stat-value">{{trueCount}}</div>
+        <div class="stat-label">Validations Passed</div>
+      </div>
+      <div class="stat-item error">
+        <div class="stat-value">{{falseCount}}</div>
+        <div class="stat-label">Issues Detected</div>
+      </div>
+      <div class="stat-item pending">
+        <div class="stat-value">{{truePercentage}}%</div>
+        <div class="stat-label">Score</div>
+      </div>
+    </div>
+
+    <div class="checklist-image">
+      <!-- <div class="processing-indicator">
+                <div class="processing-dot"></div>
+                Processing Document
+            </div> -->
+      <img [src]="image_orginal_image" alt="Original Image" class="image">
+
+    </div>
+
+    <div class="status-bar">
+      <div class="status-left">
+        <div class="status-item">
+          <div class="status-dot success"></div>
+          <div class="status-text">10 Passed</div>
+        </div>
+        <div class="status-item">
+          <div class="status-dot error"></div>
+          <div class="status-text">0 Failed</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- {{get_invoice_checklist_data | json}} -->
+  <div class="ideas-container">
+
+    <div class="idea-card"
+      [ngClass]="{
+                      'success': get_invoice_checklist_data?.invoice_no_duplicate == 'yes','error': get_invoice_checklist_data?.invoice_no_duplicate == 'no'}">
+      <div class="idea-header">
+        <div class="check-icon" *ngIf="get_invoice_checklist_data?.invoice_no_duplicate == 'yes'">✓</div>
+        <div class="cross-icon" *ngIf="get_invoice_checklist_data?.invoice_no_duplicate == 'no'">✕</div>
+        <div class="idea-title"> Duplicate Invoice No</div>
+      </div>
+
+    </div>
+    <div class="idea-card"
+      [ngClass]="{
+          'success': get_invoice_checklist_data?.invoice_po_date_check === 'no match','error': get_invoice_checklist_data?.invoice_po_date_check === 'match'}">
+      <div class="idea-header">
+        <!-- <div class="check-icon" >✓</div> -->
+        <div class="check-icon" *ngIf="get_invoice_checklist_data?.invoice_po_date_check == 'no match'">✓</div>
+        <div class="cross-icon" *ngIf="get_invoice_checklist_data?.invoice_no_duplicate == 'match'">✕</div>
+        <div class="idea-title"> Invoice Date <= PO Date</div>
+        </div>
+
+      </div>
+
+      <div class="idea-card" [ngClass]="{
+        'success': vendorMatchPercentage > 70,
+        'error': vendorMatchPercentage <= 70
+     }">
+        <div class="idea-header">
+          <div class="check-icon" *ngIf="vendorMatchPercentage > 70">✓</div>
+          <div class="cross-icon" *ngIf="vendorMatchPercentage <= 70">✕</div>
+          <div class="idea-title"> Vendor Name</div>
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.vendor_name == getInvoiceDetails?.company_name
+          ? '✅ Vendor DB Verified Successfully'
+          : '⚠️ Vendor DB Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.po_ref == getInvoiceDetails?.po_ref
+          ? '✅ Purchase Order Verified Successfully'
+          : '⚠️ Purchase Order Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.GSTIN_verified
+          ? '✅ (GSTIN) Verified Successfully'
+          : '⚠️ (GSTIN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.PAN_verified
+          ? '✅ (PAN) Verified Successfully'
+          : '⚠️ (PAN) Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.MSME_verified
+          ? '✅ (MSME) Verified Successfully'
+          : '⚠️ (MSME) Verification Failed' }}
+
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.CID_verified
+          ? '✅ (CIN) Verified Successfully'
+          : '⚠️ (CIN) Verification Failed' }}
+
+        </div>
+
+      </div>
+
+      <div class="idea-card"
+        [ngClass]="{
+                      'success': get_invoice_checklist_data?.invoice_no_duplicate === 'yes','error': get_invoice_checklist_data?.invoice_no_duplicate === 'no'}">
+        <div class="idea-header">
+          <div class="check-icon" *ngIf="get_invoice_checklist_data?.invoice_no_duplicate == 'yes'">✓</div>
+          <div class="cross-icon" *ngIf="get_invoice_checklist_data?.invoice_no_duplicate == 'no'">✕</div>
+          <div class="idea-title"> Vendor Address</div>
+          <!-- <span class="confidence-tag">94%</span> -->
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.supplier_address == getInvoiceDetails?.delivery_location
+          ? '✅ Vendor DB Verified Successfully'
+          : '⚠️ Vendor DB Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.po_ref == getInvoiceDetails?.po_ref
+          ? '✅ Purchase Order Verified Successfully'
+          : '⚠️ Purchase Order Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.GSTIN_verified
+          ? '✅ (GSTIN) Verified Successfully'
+          : '⚠️ (GSTIN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.PAN_verified
+          ? '✅ (PAN) Verified Successfully'
+          : '⚠️ (PAN) Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.MSME_verified
+          ? '✅ (MSME) Verified Successfully'
+          : '⚠️ (MSME) Verification Failed' }}
+
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.CID_verified
+          ? '✅ (CIN) Verified Successfully'
+          : '⚠️ (CIN) Verification Failed' }}
+
+        </div>
+
+
+      </div>
+
+      <div class="idea-card" [ngClass]="{
+        'success': get_invoice_checklist_data?.gstin_invoice_master_check == 'yes' && get_invoice_checklist_data?.supplier_gstin_check != 'no match',
+        'error': get_invoice_checklist_data?.gstin_invoice_master_check != 'yes' || get_invoice_checklist_data?.supplier_gstin_check == 'no match'
+     }">
+
+        <div class="idea-header">
+          <!-- Show success/failure icon -->
+          <div class="check-icon"
+            *ngIf="get_invoice_checklist_data?.gstin_invoice_master_check == 'yes' && get_invoice_checklist_data?.supplier_gstin_check != 'no match'">
+            ✓</div>
+          <div class="cross-icon"
+            *ngIf="get_invoice_checklist_data?.gstin_invoice_master_check != 'yes' || get_invoice_checklist_data?.supplier_gstin_check == 'no match'">
+            ✕</div>
+
+          <div class="idea-title">
+            <strong>Vendor GSTIN </strong>
+          </div>
+        </div>
+
+        <!-- ✅ Comments Section -->
+        <div class="idea-note">
+          <div *ngIf="get_invoice_checklist_data?.gstin_invoice_master_check == 'yes'">
+            ✅ Vendor Master GSTIN matched with Invoice Supplier GSTIN.
+          </div>
+          <div *ngIf="get_invoice_checklist_data?.gstin_invoice_master_check != 'yes'">
+            ❌ Vendor Master GSTIN did not match Invoice Supplier GSTIN.
+          </div>
+
+          <div *ngIf="get_invoice_checklist_data?.supplier_gstin_check != 'no match'">
+            ✅ Supplier GSTIN matched with PO Supplier GSTIN.
+          </div>
+          <div *ngIf="get_invoice_checklist_data?.supplier_gstin_check == 'no match'">
+            ❌ Supplier GSTIN did not match PO Supplier GSTIN.
+          </div>
+          <div class="error_message">
+
+            {{ fetchBatchData?.vendor_name == getInvoiceDetails?.company_name
+            ? '✅ Vendor DB Verified Successfully'
+            : '⚠️ Vendor DB Verification Failed' }}
+
+          </div>
+
+          <div class="error_message">
+
+            {{ fetchBatchData?.po_ref == getInvoiceDetails?.po_ref
+            ? '✅ Purchase Order Verified Successfully'
+            : '⚠️ Purchase Order Verification Failed' }}
+
+          </div>
+
+          <div class="error_message">
+
+            {{ fetchBatchData?.GSTIN_verified
+            ? '✅ (GSTIN) Verified Successfully'
+            : '⚠️ (GSTIN) Verification Failed' }}
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="idea-card"
+        [ngClass]="{
+                      'success': get_invoice_checklist_data?.suplier_pan_check === 'match','error': get_invoice_checklist_data?.suplier_pan_check === 'no match'}">
+        <div class="idea-header">
+          <div class="check-icon" *ngIf="get_invoice_checklist_data?.suplier_pan_check == 'match'">✓</div>
+          <div class="cross-icon" *ngIf="get_invoice_checklist_data?.suplier_pan_check == 'no match'">✕</div>
+          <div class="idea-title"> Supplier PAN</div>
+          <!-- <span class="confidence-tag">94%</span> -->
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.vendor_name == getInvoiceDetails?.company_name
+          ? '✅ Vendor DB Verified Successfully'
+          : '⚠️ Vendor DB Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.po_ref == getInvoiceDetails?.po_ref
+          ? '✅ Purchase Order Verified Successfully'
+          : '⚠️ Purchase Order Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.GSTIN_verified
+          ? '✅ (GSTIN) Verified Successfully'
+          : '⚠️ (GSTIN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.PAN_verified
+          ? '✅ (PAN) Verified Successfully'
+          : '⚠️ (PAN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.MSME_verified
+          ? '✅ (MSME) Verified Successfully'
+          : '⚠️ (MSME) Verification Failed' }}
+
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.CID_verified
+          ? '✅ (CIN) Verified Successfully'
+          : '⚠️ (CIN) Verification Failed' }}
+
+        </div>
+
+
+      </div>
+
+      <div class="idea-card" [ngClass]="{
+        'success': vendorMatchPercentage > 70,
+        'error': vendorMatchPercentage <= 70
+     }">
+        <div class="idea-header">
+          <div class="check-icon" *ngIf="vendorMatchPercentage > 70">✓</div>
+          <div class="cross-icon" *ngIf="vendorMatchPercentage <= 70">✕</div>
+          <div class="idea-title"> Bank Details </div>
+        </div>
+
+        <div class="error_message">
+          ⚠️ Third Party Verification Due
+        </div>
+        <!-- conditions.push(
+      this.get_invoice_checklist_data?.invoice_total_lineitems ==
+      this.get_invoice_checklist_data?.invoice_total
+    ); -->
+      </div>
+      <div class="idea-card success">
+        <div class="idea-header">
+          <div class="check-icon"
+            *ngIf="get_invoice_checklist_data?.invoice_total_lineitems == get_invoice_checklist_data?.invoice_total">✓
+          </div>
+          <div class="cross-icon"
+            *ngIf="get_invoice_checklist_data?.invoice_total_lineitems != get_invoice_checklist_data?.invoice_total">✕
+          </div>
+          <div class="idea-title"> Inv Sum Value = Total Inv Value (OCR)</div>
+        </div>
+      </div>
+
+      <div class="idea-card success">
+        <div class="idea-header">
+          <div class="check-icon">✓</div>
+          <div class="idea-title"> MSME</div>
+          <!-- <span class="confidence-tag">94%</span> -->
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.vendor_name == getInvoiceDetails?.company_name
+          ? '✅ Vendor DB Verified Successfully'
+          : '⚠️ Vendor DB Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.po_ref == getInvoiceDetails?.po_ref
+          ? '✅ Purchase Order Verified Successfully'
+          : '⚠️ Purchase Order Verification Failed' }}
+
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.GSTIN_verified
+          ? '✅ (GSTIN) Verified Successfully'
+          : '⚠️ (GSTIN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.PAN_verified
+          ? '✅ (PAN) Verified Successfully'
+          : '⚠️ (PAN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.MSME_verified
+          ? '✅ (MSME) Verified Successfully'
+          : '⚠️ (MSME) Verification Failed' }}
+
+        </div>
+        <div class="error_message">
+
+          {{ fetchBatchData?.CID_verified
+          ? '✅ (CIN) Verified Successfully'
+          : '⚠️ (CIN) Verification Failed' }}
+
+        </div>
+
+
+        <div class="idea-note">
+          <span>MSME NO : <b>{{msme}}</b></span>
+        </div>
+
+      </div>
+
+
+
+      <div class="idea-card"
+        [ngClass]="{
+                      'success': get_invoice_checklist_data?.buyer_gstin_check != 'no match','error': get_invoice_checklist_data?.buyer_gstin_check == 'no match'}">
+        <div class="idea-header">
+          <div class="check-icon" *ngIf="get_invoice_checklist_data?.buyer_gstin_check != 'no match'">✓</div>
+          <div class="cross-icon" *ngIf="get_invoice_checklist_data?.buyer_gstin_check == 'no match'">✕</div>
+          <div class="idea-title"> Bill to GSTIN </div>
+        </div>
+
+        <div class="error_message">
+
+          {{ fetchBatchData?.GSTIN_verified
+          ? '✅ (GSTIN) Verified Successfully'
+          : '⚠️ (GSTIN) Verification Failed' }}
+
+        </div>
+      </div>
+
+    </div>
+  </div>

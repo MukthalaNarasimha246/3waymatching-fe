@@ -1,0 +1,239 @@
+<div class="view-container">
+
+  <div class="dashboard-container">
+    <div class="header">
+      <div class="header-title row dashboard-heading">
+  <p>📊 Performance Dashboard – Customer & Market Analysis</p>
+</div>
+
+      <div class="sub-hearder-main" >
+        <div class="comparison-label">
+          <div class="header-subtitle text-light col" style="white-space: no wrap;">Showing Comparison: Year 2025 vs
+            2024</div>
+                 
+        </div>
+        <div class="comparison-label-sold">
+          <div class="header-subtitle  text-light col">(All figures are in INR (₹) except units sold)</div>
+        </div>
+      </div>
+      <div class="header-tab-options row">
+        <div class="tab-option"><button (click)="setActiveTab('invoice')"
+            [ngClass]="{ 'active': activeTab === 'invoice' }">Invoice</button></div>
+        <div class="tab-option"><button (click)="setActiveTab('product')"
+            [ngClass]="{ 'active': activeTab === 'product' }">Product</button></div>
+        <div class="tab-option"><button (click)="setActiveTab('purchase_order')"
+            [ngClass]="{ 'active': activeTab === 'purchase_order' }">Purchases</button></div>
+        <div class="tab-option"><button (click)="setActiveTab('reconciliation')"
+            [ngClass]="{ 'active': activeTab === 'reconciliation' }">Reconciliation</button></div>
+        <div class="tab-option"><button (click)="setActiveTab('Vendor')"
+            [ngClass]="{ 'active': activeTab === 'Vendor' }">Vendor</button></div>
+      </div>
+    </div>
+
+    
+    <div class="chip-carousel row" >
+      <div class="carousel-container" *ngIf="1 > 2">
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">Sales</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">2.7M</div>
+            <div class="chip-info-graph">
+              <!-- <div echarts [options]="options1" [autoResize]="true"></div> -->
+            </div>
+            <div class="chip-info-diff">+18.50% vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">Profit</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">307.4K</div>
+            <div class="chip-info-graph">
+              <!-- <div echarts [options]="options1"></div> -->
+            </div>
+            <div class="chip-info-diff">+18.50% vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">Units Sold</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">2.7M</div>
+            <div class="chip-info-graph">
+              <!-- <div echarts [options]="options1"></div> -->
+            </div>
+            <div class="chip-info-diff">+18.50% vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">Orders</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">2.7M</div>
+            <div class="chip-info-graph">
+              <!-- <div echarts [options]="options1"></div> -->
+            </div>
+            <div class="chip-info-diff">+18.50% vs PY</div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-container">
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">{{ chip_header_1 }}</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">
+              <!-- {{ carousel_1_diff | formatNumber }} -->
+              <app-animated-number [value]="carousel_1_diff"></app-animated-number>
+            </div>
+            <div class="chip-info-graph">
+              <echarts [options]="chartOptions" class="tiny-chart"></echarts>
+            </div>
+            <div class="chip-info-diff" [ngClass]="{'positive': chip_1_diff >= 0,'negative': chip_1_diff < 0}">{{
+              chip_1_diff >= 0 ? '+' : '-' }}{{
+              chip_1_diff }}% vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">{{ chip_header_2 }}</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">
+              <!-- {{ carousel_2_diff | formatNumber}} -->
+              <app-animated-number [value]="carousel_2_diff"></app-animated-number>
+            </div>
+            <div class="chip-info-graph">
+              <echarts [options]="chartOptions" class="tiny-chart"></echarts>
+            </div>
+            <div class="chip-info-diff" [ngClass]="{'positive': chip_2_diff >= 0,'negative': chip_2_diff < 0}">{{ chip_2_diff >=
+              0 ? '+' : '-' }}{{ chip_2_diff }}%
+              vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">{{ chip_header_3 }}</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">
+              <!-- {{ carousel_3_diff | formatNumber }} -->
+              <app-animated-number [value]="carousel_3_diff"></app-animated-number>
+            </div>
+            <div class="chip-info-graph">
+              <echarts [options]="chartOptions" class="tiny-chart"></echarts>
+            </div>
+            <div class="chip-info-diff"
+              [ngClass]="{'positive': chip_3_diff >= 0,'negative': chip_3_diff < 0}">{{
+              chip_3_diff >= 0 ? '+' : '-' }}{{
+              chip_3_diff }}% vs PY</div>
+          </div>
+        </div>
+        <div class="chip-info-card">
+          <div class="chip-info-card-header">{{ chip_header_4 }}</div>
+          <div class="chip-info-content">
+            <div class="chip-info-number">
+              <!-- {{ carousel_4_diff | formatNumber }} -->
+              <app-animated-number [value]="carousel_4_diff"></app-animated-number>
+            </div>
+            <div class="chip-info-graph">
+              <echarts [options]="chartOptions" class="tiny-chart"></echarts>
+            </div>
+            <div class="chip-info-diff" [ngClass]="{'positive': chip_4_diff >= 0,'negative': chip_4_diff < 0}">{{
+              chip_4_diff >=
+              0 ? '+' : '-' }}{{ chip_4_diff }}%
+              vs PY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-grid row container">
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Distribution of Sales vs Profit</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart1"></div>
+        </div>
+      </div>
+      <div class="dashboard-item col">
+        <div class="dashboard-item-graph">
+          <!-- <button (click)="resetZoom()">Reset Zoom</button> -->
+          <div echarts [options]="chartMap" (chartInit)="onChartInit($event)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-grid row container">
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Distribution of Sales vs Profit</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart3"></div>
+        </div>
+      </div>
+      <div class="dashboard-item col">
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart4"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-grid row container">
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Spend Trend over Time</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart5" [autoResize]="true"></div>
+        </div>
+      </div>
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Spend vs Discount and Gross Amount</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-grid row container">
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Distribution of Sales vs Profit</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart7"></div>
+        </div>
+      </div>
+      <div class="dashboard-item col">
+        <!-- <div class="dashboard-header">
+          <div class="dashboard-title">Revenue Distribution by Branch</div>
+          <div class="dashboard-subtitle">by Customer</div>
+          <div class="dashboard-dropdown"><select name="" id="">
+              <option value="">Sales</option>
+            </select></div>
+        </div> -->
+        <div class="dashboard-item-graph">
+          <div echarts [options]="gridChart8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

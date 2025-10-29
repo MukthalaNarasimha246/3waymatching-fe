@@ -9,34 +9,41 @@ import { CommonServiceService } from '../../services/common-service.service';
 })
 export class SideNavComponent implements OnInit {
   userRole: string = '';
+  theme: string = 'light';
+  isReConciliation: boolean = false
 
-  isReConciliation:boolean = false
-
-  constructor(private authService:AuthService,private _common_service:CommonServiceService) { }
+  constructor(private authService: AuthService, private _common_service: CommonServiceService) { }
   isSidebarCollapsed = false;
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
-  logout(){
+  logout() {
     this.authService.logout()
     localStorage.clear();
     window.location.href = '/login';
   }
   ngOnInit(): void {
     console.log('Calling the ngOnInit Functiona');
-    this.userRole = localStorage.getItem('role') || ''; 
-    
-    
+    this.userRole = localStorage.getItem('role') || '';
+
+
     // commente beacause there iam something wrong below code
 
-     // ✅ This handles refresh: re-check value and emit it
-  this._common_service.updateSidebarOptionFlag();
-    
-     this._common_service.detected_sidebar_option$.subscribe(option_enable => {
+    // ✅ This handles refresh: re-check value and emit it
+    this._common_service.updateSidebarOptionFlag();
 
-      console.log(option_enable,'option_enable&&&&&&&&&&');
+    this._common_service.detected_sidebar_option$.subscribe(option_enable => {
+
+      console.log(option_enable, 'option_enable&&&&&&&&&&');
       this.isReConciliation = option_enable
 
     });
   }
+
+  toggleTheme(): void {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', this.theme);
+    localStorage.setItem('theme', this.theme);
+  }
+
 }

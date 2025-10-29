@@ -1,603 +1,134 @@
-<div class="form-content main-content">
+<div class="form-content">
   <div class="form-container">
     <!-- Purchase Order Details -->
     <div class="form-section">
-      <div class="section-header" (click)="toggleCollapse('Order_details')">
+      <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)"
-            [style.transform]="isCollapsed['Order_details'] ? 'rotate(90deg)' : 'rotate(0deg)'">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           Purchase Order Details
         </div>
       </div>
-      <div class="form-content" [ngClass]="{'collapsed': isCollapsed['Order_details']}">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="required">Purchase Order</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.po_number" />
-            <p *ngIf="!isEditMode">{{poDetails?.po_number?poDetails.po_number:'Not Data Found'}}</p>
-            <div class="input-icon">
-              <svg class="svg-icon svg-icon--sm">
-                <use xlink:href="#icon-search"></use>
-              </svg>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Purchase Order Date</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.po_date" readonly />
-            <p *ngIf="!isEditMode">{{poDetails?.po_date?poDetails.po_date:'Not Data Found'}}</p>
-
-          </div>
-          <div class="form-group">
-            <label>Vendor Ref:</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.vendor_reference"
-              readonly />
-            <p *ngIf="!isEditMode">{{poDetails?.vendor_reference?poDetails?.vendor_reference:'Not Data Found'}}</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Purchase Order</label>
+          <input type="text" class="form-control" [value]="poDetails?.po_number" />
+          <div class="input-icon">
 
           </div>
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Delivery Terms</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.delivery_terms" />
-            <p *ngIf="!isEditMode">{{poDetails?.delivery_terms?poDetails?.delivery_terms:'Not Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label class="required">Payment Terms</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.payment_terms" />
-            <p *ngIf="!isEditMode">{{poDetails?.payment_terms?poDetails?.payment_terms:'Not Data Found'}}</p>
-            <div class="input-icon">
-              <svg class="svg-icon svg-icon--sm">
-                <use xlink:href="#icon-search"></use>
-              </svg>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Shipment Mode</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.shipment_mode" />
-            <p *ngIf="!isEditMode">{{poDetails?.shipment_mode?poDetails?.shipment_mode:'Not Data Found'}}</p>
-
-          </div>
+        <div class="form-group">
+          <label>Purchase Order Date</label>
+          <input type="text" class="form-control" [value]="poDetails?.po_date" readonly />
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Warranty Period</label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.warranty_period" />
-            <p *ngIf="!isEditMode">{{poDetails?.warranty_period?poDetails?.warranty_period:'Not Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label> Delivery Period </label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.delivery_period" />
-            <p *ngIf="!isEditMode">{{poDetails?.delivery_period?poDetails?.delivery_period:'Not Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label> Contact Person </label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.contact_person" />
-            <p *ngIf="!isEditMode">{{poDetails?.contact_person?poDetails?.contact_person:'Not Data Found'}}</p>
-          </div>
+        <div class="form-group">
+          <label>Vendor Ref:</label>
+          <input type="text" class="form-control" [value]="poDetails?.vendor_reference" readonly />
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label> Mobile Number </label>
-            <input type="text" class="form-control" *ngIf="isEditMode" [(ngModel)]="poDetails.mobile_number" />
-            <p *ngIf="!isEditMode">{{poDetails?.mobile_number?poDetails?.mobile_number:'Not Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <div class="ghost-placeholder"></div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div *ngIf="isEditMode" class="edit-container">
-            <button class="btn btn-primary" (click)="saveinvoicedetails(poDetails)">
-              Update
-
-            </button>
-            <button class="btn btn-primary" (click)="cancelEdit()">
-              Cancle
-
-            </button>
-
-          </div>
-
-          <button class="btn btn-primary" *ngIf="!isEditMode" (click)="enableEdit()">
-            Edit
-
-          </button>
-        </div>
-        <a href="#" class="show-more">
-          Show More
-          <svg class="svg-icon svg-icon--sm">
-            <use xlink:href="#icon-more-down"></use>
-          </svg>
-        </a>
-
       </div>
 
+      <div class="form-row">
+        <div class="form-group">
+          <label>Delivery Terms</label>
+          <input type="text" class="form-control" [value]="poDetails?.delivery_terms" />
+        </div>
+        <div class="form-group">
+          <label class="required">Payment Terms</label>
+          <input type="text" class="form-control" [value]="poDetails?.payment_terms" />
+          <div class="input-icon">
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Shipment Mode</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipment_mode" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Warranty Period</label>
+          <input type="text" class="form-control" [value]="poDetails?.warranty_period" />
+        </div>
+        <div class="form-group">
+          <label> Delivery Period </label>
+          <input type="text" class="form-control" [value]="poDetails?.delivery_period" />
+        </div>
+        <div class="form-group">
+          <label> Contact Person </label>
+          <input type="text" class="form-control" [value]="poDetails?.contact_person" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label> Mobile Number </label>
+          <input type="text" class="form-control" [value]="poDetails?.mobile_number" />
+        </div>
+        <div class="form-group">
+          <div class="ghost-placeholder"></div>
+        </div>
+      </div>
+
+      <a href="#" class="show-more">
+        Show More
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-more-down"></use>
+        </svg>
+      </a>
     </div>
 
     <!-- Bill To -->
     <div class="form-section">
-      <div class="section-header" (click)="toggleCollapse('bill_details')">
-        <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)"
-            [style.transform]="isCollapsed['bill_details'] ? 'rotate(90deg)' : 'rotate(0deg)'">
-            <use xlink:href="#icon-list"></use>
-          </svg>
-          Bill To
-        </div>
-      </div>
-      <div class="form-content" [ngClass]="{'collapsed': isCollapsed['bill_details']}">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="required">Company Name</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode"
-              [(ngModel)]="poDetails.bill_to.company_name" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.company_name?poDetails?.bill_to?.company_name:'No Data
-              Found'}}
-            </p>
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.address"
-              readonly />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.address?poDetails.bill_to.address:'No Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.state"
-              readonly />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.state?poDetails.bill_to.state:'No Data Found'}}</p>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>State Code</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.state_code" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to?.state_code?poDetails.bill_to.state_code:'No Data Found'}}
-            </p>
-          </div>
-          <div class="form-group">
-            <label class="required">GSTIN</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.gstin" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.gstin?poDetails.bill_to.gstin:'No Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label class="required">PAN</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.pan" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.pan?poDetails.bill_to.pan:'No Data Found'}}</p>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>CIN</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.cin" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.cin?poDetails.bill_to.cin:'No Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label>Contact Name</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode"
-              [(ngModel)]="poDetails.bill_to.contact_name" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.contact_name?poDetails.bill_to.contact_name:'No Data
-              Found'}}
-            </p>
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.email" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.email?poDetails.bill_to.email:'No Data Found'}}</p>
-          </div>
-          <div class="form-group">
-            <label>Mobile</label>
-            <input type="text" class="form-control" *ngIf="isEditBillMode" [(ngModel)]="poDetails.bill_to.mobile" />
-            <p *ngIf="!isEditBillMode">{{poDetails?.bill_to.mobile?poDetails.bill_to.mobile:'No Data Found'}}</p>
-          </div>
-        </div>
-        <a href="#" class="show-more">
-          Show More
-          <svg class="svg-icon svg-icon--sm">
-            <use xlink:href="#icon-more-down"></use>
-          </svg>
-        </a>
-        <div class="form-row">
-          <div *ngIf="isEditBillMode" class="edit-container">
-            <button class="btn btn-primary" (click)="saveinvoicedetails(poDetails)">
-              Update
-
-            </button>
-            <button class="btn btn-primary" (click)="disableEditModeBill()">
-              Cancle
-
-            </button>
-
-          </div>
-
-          <button class="btn btn-primary" *ngIf="!isEditBillMode" (click)="enableEditBill()">
-            Edit
-
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Supplier -->
-
-    <!-- add supplier-->
-    <div class="form-section">
-      <div class="section-header" (click)="toggleCollapse('supplier_details')">
-        <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)"
-            [style.transform]="isCollapsed['supplier_details'] ? 'rotate(90deg)' : 'rotate(0deg)'">
-            <use xlink:href="#icon-list"></use>
-          </svg>
-          Supplier
-        </div>
-      </div>
-
-      <div class="form-content" [ngClass]="{'collapsed': isCollapsed['supplier_details']}">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="required">Company Name</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode"
-              [(ngModel)]="poDetails.supplier.company_name" />
-
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.supplier?.company_name?poDetails?.supplier?.company_name:'No
-              Data
-              Found'}}</p>
-
-            <!-- Verification message -->
-            <div *ngIf="true" class="mt-1">
-              <small [ngClass]="{
-        'text-secondary': gstinVerfiedObject?.name != poDetails?.supplier?.company_name,
-        'text-success': gstinVerfiedObject?.name === poDetails?.supplier?.company_name,
-        'text-danger': gstinVerfiedObject?.name != poDetails?.supplier?.company_name,
-      }">
-
-                {{
-                gstinVerfiedObject == null ? 'Not verified':
-
-                gstinVerfiedObject?.name?.trim()?.toLowerCase() ==
-                poDetails?.supplier?.company_name?.trim()?.toLowerCase()
-                ? 'Company Name verified successfully ✅'
-                : "Invalid Company Name ❌"
-                }}
-              </small>
-            </div>
-
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode"
-              [(ngModel)]="poDetails.supplier.address" />
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.supplier?.address?poDetails?.supplier?.address:'No Data Found'}}
-            </p>
-          </div>
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" class="form-control" [value]="poDetails?.supplier?.state" />
-            <div *ngIf="true" class="mt-1">
-              <small [ngClass]="{
-        'text-secondary': gstinVerfiedObject?.state != poDetails?.supplier?.state,
-        'text-success': gstinVerfiedObject?.state === poDetails?.supplier?.state,
-        'text-danger': gstinVerfiedObject?.state != poDetails?.supplier?.state,
-      }">
-
-
-                {{
-                gstinVerfiedObject == null ? 'Not verified':
-
-                getStateInfo(poDetails?.supplier?.gstin).state === poDetails?.supplier?.state
-                ? 'State Name Verfied ✅'
-                : "Invalid State ❌"
-                }}
-              </small>
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>State Code</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode"
-              [(ngModel)]="getStateInfo(poDetails?.supplier?.gstin).code" />
-
-
-            <small [ngClass]="{
-        'text-secondary': !getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
-        'text-success': getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
-        'text-danger': !getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
-      }">
-
-
-              {{
-              gstinVerfiedObject == null ? 'Not verified':
-
-              getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin)
-              ? 'State Code Verfied ✅'
-              : "Invalid State Code❌"
-              }}
-            </small>
-
-            <p *ngIf="!isEditSupplierMode">{{getStateInfo(poDetails?.supplier?.gstin).code}}</p>
-
-          </div>
-
-
-          <div class="form-group">
-            <label class="required">GSTIN</label>
-            <div class="input-group">
-              <input type="text" class="form-control" *ngIf="isEditSupplierMode"
-                [(ngModel)]="poDetails.supplier.gstin" />
-              <p *ngIf="!isEditSupplierMode">{{poDetails?.supplier?.gstin}}</p>
-
-              <button *ngIf="gstinVerfiedObject == null" class="btn btn-primary btn-verify" type="button"
-                (click)="verifyGSTIN(poDetails?.supplier?.gstin)">
-                Verify
-              </button>
-              <div *ngIf="gstinVerfiedObject">
-                <!-- Dropdown -->
-                <select *ngIf="!showDatePicker" class="verify-select-box form-control"
-                  (change)="onSelectOption($event)">
-                  <option value="">Select Option</option>
-                  <option value="date">Date Picker</option>
-                  <option value="next">Next Invoice</option>
-                </select>
-
-                <!-- Date Picker -->
-                <input *ngIf="showDatePicker" type="date" class="form-control mt-2" [(ngModel)]="selectedDate" />
-              </div>
-            </div>
-
-            <!-- Verification message -->
-            <div *ngIf="verificationStatus" class="mt-1">
-              <small [ngClass]="{
-        'text-secondary': verificationStatus === 'id_not_found',
-        'text-success': verificationStatus === 'id_found',
-        'text-danger': verificationStatus === 'id_not_found'
-      }">
-
-
-                {{
-                gstinVerfiedObject == null ? 'Not verified':
-
-                verificationStatus === 'id_found'
-                ? 'GSTIN verified successfully ✅'
-                : "Invalid GSTIN ❌"
-                }}
-              </small>
-            </div>
-
-
-
-
-          </div>
-
-
-          <div class="form-group">
-            <label class="required">PAN</label>
-            <div class="input-group">
-              <input type="text" class="form-control" *ngIf="isEditSupplierMode" [(ngModel)]="poDetails.supplier.pan" />
-              <p *ngIf="!isEditSupplierMode">{{poDetails?.supplier?.pan}}</p>
-
-              <button class="btn btn-primary btn-verify" type="button" (click)="verifyPAN(poDetails?.supplier?.pan)">
-                Verify
-              </button>
-            </div>
-
-            <!-- Verification message -->
-            <div *ngIf="verificationStatus" class="mt-1">
-              <small [ngClass]="{
-        'text-secondary': panVerifiedObject?.status === 'id_not_found',
-        'text-success': panVerifiedObject?.status === 'id_found',
-        'text-danger': panVerifiedObject?.status === 'id_not_found'
-      }">
-                {{
-                panVerifiedObject == null ? 'Not verified':
-
-                panVerifiedObject?.status === 'id_found'
-                ? 'Pan verified successfully ✅'
-                : "Invalid PAN ❌"
-                }}
-              </small>
-            </div>
-          </div>
-
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>CIN</label>
-
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode" [(ngModel)]="poDetails.cin" />
-
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.cin}}</p>
-          </div>
-
-
-          <div class="form-group">
-            <label>UDYAM Registration No.</label>
-            <!-- <input type="text" class="form-control" /> -->
-
-            <div class="input-group">
-              <input type="text" class="form-control" *ngIf="isEditSupplierMode"
-                [(ngModel)]="poDetails.supplier.udyam_regno" />
-              <p *ngIf="!isEditSupplierMode">{{poDetails?.supplier?.udyam_regno}}</p>
-
-
-              <ng-container
-                *ngIf="poDetails?.supplier?.udyam_regno ? poDetails?.supplier?.udyam_regno:poDetails?.supplier?.msme_regno">
-                <button class="btn btn-primary btn-verify" type="button"
-                  (click)="verifyMems(poDetails?.supplier?.udyam_regno ? poDetails?.supplier?.udyam_regno:poDetails?.supplier?.msme_regno)">
-                  Verify
-                </button>
-
-              </ng-container>
-
-
-
-            </div>
-            <!-- Verification message -->
-            <div *ngIf="memsVerifiedObject" class="mt-1">
-              <small [ngClass]="{
-        'text-secondary': verificationStatusMems != 'success',
-        'text-success': verificationStatusMems === 'success',
-        'text-danger': verificationStatusMems != 'success'
-      }">
-                {{
-                memsVerifiedObject == null ? 'Not verified':
-
-                verificationStatusMems == 'success'
-                ? 'MEMS verified successfully ✅'
-                : "Invalid MEMS ❌"
-                }}
-              </small>
-            </div>
-
-
-
-
-
-
-          </div>
-
-
-
-          <div class="form-group">
-            <label>Contact Name</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode" [(ngModel)]="poDetails.contact_number" />
-
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.contact_number}}</p>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode" [(ngModel)]="poDetails.email" />
-
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.email}}</p>
-          </div>
-          <div class="form-group">
-            <label>Mobile</label>
-            <input type="text" class="form-control" *ngIf="isEditSupplierMode" [(ngModel)]="poDetails.mobile" />
-
-            <p *ngIf="!isEditSupplierMode">{{poDetails?.mobile}}</p>
-          </div>
-          <!-- <div class="form-group">
-                    <div class="ghost-placeholder"></div>
-                  </div> -->
-        </div>
-        <a href="#" class="show-more">
-          Show More
-          <svg class="svg-icon svg-icon--sm">
-            <use xlink:href="#icon-more-down"></use>
-          </svg>
-        </a>
-        <div class="form-row">
-          <div *ngIf="isEditSupplierMode" class="edit-container">
-            <button class="btn btn-primary" (click)="saveinvoicedetails(poDetails)">
-              Update
-
-            </button>
-            <button class="btn btn-primary" (click)="disableEditModeBillSupplier()">
-              Cancle
-
-            </button>
-
-          </div>
-
-          <button class="btn btn-primary" *ngIf="!isEditSupplierMode" (click)="enableEditSupplier()">
-            Edit
-
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-
-    <!-- Shipping -->
-    <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
-          Shipping
+
+          Bill To
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="required">Company Name</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.company_name" />
-
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.company_name}}</p>
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.company_name" />
         </div>
         <div class="form-group">
           <label>Address</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.shipping_address" readonly />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.shipping_address}}</p>
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.address" readonly />
         </div>
         <div class="form-group">
           <label>State</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode" [(ngModel)]="poDetails.shipping.state"
-            readonly />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.state}}</p>
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.state" readonly />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>State Code</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.state_code" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.state_code}}</p>
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.state_code" />
         </div>
         <div class="form-group">
           <label class="required">GSTIN</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.gstin_buyer" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.gstin_buyer}}</p>
-
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.gstin" />
         </div>
         <div class="form-group">
           <label class="required">PAN</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode" [(ngModel)]="poDetails.shipping.pan" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.pan}}</p>
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.pan" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>CIN</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode" [(ngModel)]="poDetails.shipping.cin" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.cin}}</p>
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.cin" />
         </div>
         <div class="form-group">
           <label>Contact Name</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.contact_name" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.contact_name}}</p>
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.contact_name" />
         </div>
         <div class="form-group">
           <label>Email</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode" [(ngModel)]="poDetails.shipping.email" />
-
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.email}}</p>
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.email" />
         </div>
         <div class="form-group">
           <label>Mobile</label>
-          <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
-            [(ngModel)]="poDetails.shipping.mobile" />
-          <p *ngIf="!isEditBankDetailMode">{{poDetails?.shipping?.mobile}}</p>
-
+          <input type="text" class="form-control" [value]="poDetails?.bill_to?.mobile" />
         </div>
       </div>
       <a href="#" class="show-more">
@@ -606,33 +137,320 @@
           <use xlink:href="#icon-more-down"></use>
         </svg>
       </a>
+    </div>
+
+    <!-- Supplier -->
+
+    <!-- add supplier-->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+
+          Supplier
+        </div>
+      </div>
       <div class="form-row">
-        <div *ngIf="isEditBankDetailMode" class="edit-container">
-          <button class="btn btn-primary" (click)="saveinvoicedetails(poDetails)">
-            Update
+        <div class="form-group">
+          <label class="required">Company Name</label>
+          <input type="text" class="form-control" [value]="poDetails?.supplier?.company_name" />
 
-          </button>
-          <button class="btn btn-primary" (click)="disableEditModeBillBankDetail()">
-            Cancle
+          <!-- Verification message -->
+          <div *ngIf="true" class="mt-1">
+            <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.name != poDetails?.supplier?.company_name,
+        'text-success': gstinVerfiedObject?.name === poDetails?.supplier?.company_name,
+        'text-danger': gstinVerfiedObject?.name != poDetails?.supplier?.company_name,
+      }">
 
-          </button>
+              {{
+              gstinVerfiedObject == null ? 'Not verified':
+
+              gstinVerfiedObject?.name?.trim()?.toLowerCase() ==
+              poDetails?.supplier?.company_name?.trim()?.toLowerCase()
+              ? 'Company Name verified successfully ✅'
+              : "Invalid Company Name ❌"
+              }}
+            </small>
+          </div>
+
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" class="form-control" [value]="poDetails?.supplier?.address" />
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" class="form-control" [value]="poDetails?.supplier?.state" />
+          <div *ngIf="true" class="mt-1">
+            <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.state != poDetails?.supplier?.state,
+        'text-success': gstinVerfiedObject?.state === poDetails?.supplier?.state,
+        'text-danger': gstinVerfiedObject?.state != poDetails?.supplier?.state,
+      }">
+
+
+              {{
+              gstinVerfiedObject == null ? 'Not verified':
+
+              getStateInfo(poDetails?.supplier?.gstin).state === poDetails?.supplier?.state
+              ? 'State Name Verfied ✅'
+              : "Invalid State ❌"
+              }}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>State Code</label>
+          <input type="text" class="form-control" [value]="getStateInfo(poDetails?.supplier?.gstin).code" />
+
+
+          <small [ngClass]="{
+        'text-secondary': !getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
+        'text-success': getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
+        'text-danger': !getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin),
+      }">
+
+
+            {{
+            gstinVerfiedObject == null ? 'Not verified':
+
+            getStateCodeValidation(getStateInfo(poDetails?.supplier?.gstin).code,poDetails?.supplier?.gstin)
+            ? 'State Code Verfied ✅'
+            : "Invalid State Code❌"
+            }}
+          </small>
+
+
+
+
+
 
         </div>
 
-        <button class="btn btn-primary" *ngIf="!isEditBankDetailMode" (click)="enableEditBankDetail()">
-          Edit
 
-        </button>
+        <div class="form-group">
+          <label class="required">GSTIN</label>
+          <div class="input-group">
+            <input type="text" class="form-control" [value]="poDetails?.supplier?.gstin" />
+            <button *ngIf="gstinVerfiedObject == null" class="btn btn-primary btn-verify" type="button"
+              (click)="verifyGSTIN(poDetails?.supplier?.gstin)">
+              Verify
+            </button>
+            <div *ngIf="gstinVerfiedObject">
+              <!-- Dropdown -->
+              <select *ngIf="!showDatePicker" class="verify-select-box form-control" (change)="onSelectOption($event)">
+                <option value="">Select Option</option>
+                <option value="date">Date Picker</option>
+                <option value="next">Next Invoice</option>
+              </select>
+
+              <!-- Date Picker -->
+              <input *ngIf="showDatePicker" type="date" class="form-control mt-2" [(ngModel)]="selectedDate" />
+            </div>
+          </div>
+
+          <!-- Verification message -->
+          <div *ngIf="verificationStatus" class="mt-1">
+            <small [ngClass]="{
+        'text-secondary': verificationStatus === 'id_not_found',
+        'text-success': verificationStatus === 'id_found',
+        'text-danger': verificationStatus === 'id_not_found'
+      }">
+
+
+              {{
+              gstinVerfiedObject == null ? 'Not verified':
+
+              verificationStatus === 'id_found'
+              ? 'GSTIN verified successfully ✅'
+              : "Invalid GSTIN ❌"
+              }}
+            </small>
+          </div>
+
+
+
+
+        </div>
+
+
+        <div class="form-group">
+          <label class="required">PAN</label>
+          <div class="input-group">
+            <input type="text" class="form-control" [value]="poDetails?.supplier?.pan" />
+            <button class="btn btn-primary btn-verify" type="button" (click)="verifyPAN(poDetails?.supplier?.pan)">
+              Verify
+            </button>
+          </div>
+
+          <!-- Verification message -->
+          <div *ngIf="verificationStatus" class="mt-1">
+            <small [ngClass]="{
+        'text-secondary': panVerifiedObject?.status === 'id_not_found',
+        'text-success': panVerifiedObject?.status === 'id_found',
+        'text-danger': panVerifiedObject?.status === 'id_not_found'
+      }">
+              {{
+              panVerifiedObject == null ? 'Not verified':
+
+              panVerifiedObject?.status === 'id_found'
+              ? 'Pan verified successfully ✅'
+              : "Invalid PAN ❌"
+              }}
+            </small>
+          </div>
+        </div>
+
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CIN</label>
+          <input type="text" class="form-control" />
+        </div>
+
+
+        <div class="form-group">
+          <label>UDYAM Registration No.</label>
+          <!-- <input type="text" class="form-control" /> -->
+
+          <div class="input-group">
+            <input type="text" class="form-control"
+              [value]="poDetails?.supplier?.udyam_regno ? poDetails?.supplier?.udyam_regno:poDetails?.supplier?.msme_regno" />
+
+            <ng-container
+              *ngIf="poDetails?.supplier?.udyam_regno ? poDetails?.supplier?.udyam_regno:poDetails?.supplier?.msme_regno">
+              <button class="btn btn-primary btn-verify" type="button"
+                (click)="verifyMems(poDetails?.supplier?.udyam_regno ? poDetails?.supplier?.udyam_regno:poDetails?.supplier?.msme_regno)">
+                Verify
+              </button>
+
+            </ng-container>
+
+
+
+          </div>
+          <!-- Verification message -->
+          <div *ngIf="memsVerifiedObject" class="mt-1">
+            <small [ngClass]="{
+        'text-secondary': verificationStatusMems != 'success',
+        'text-success': verificationStatusMems === 'success',
+        'text-danger': verificationStatusMems != 'success'
+      }">
+              {{
+              memsVerifiedObject == null ? 'Not verified':
+
+              verificationStatusMems == 'success'
+              ? 'MEMS verified successfully ✅'
+              : "Invalid MEMS ❌"
+              }}
+            </small>
+          </div>
+
+
+
+
+
+
+        </div>
+
+
+
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" class="form-control" />
+        </div>
+        <!-- <div class="form-group">
+                    <div class="ghost-placeholder"></div>
+                  </div> -->
+      </div>
+      <a href="#" class="show-more">
+        Show More
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-more-down"></use>
+        </svg>
+      </a>
+    </div>
+
+
+    <!-- Shipping -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-title">
+
+          Shipping
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Company Name</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.company_name" />
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.shipping_address" readonly />
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.state" readonly />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>State Code</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.state_code" />
+        </div>
+        <div class="form-group">
+          <label class="required">GSTIN</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.gstin_buyer" />
+        </div>
+        <div class="form-group">
+          <label class="required">PAN</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.pan" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CIN</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.cin" />
+        </div>
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.contact_name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.email" />
+        </div>
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" class="form-control" [value]="poDetails?.shipping?.mobile" />
+        </div>
+      </div>
+      <a href="#" class="show-more">
+        Show More
+        <svg class="svg-icon svg-icon--sm">
+          <use xlink:href="#icon-more-down"></use>
+        </svg>
+      </a>
     </div>
 
     <!-- Purchase Order Line Items -->
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           Purchase Order Line Items
           <div class="badge">{{ poDetails?.line_items?.length }}</div>
         </div>
@@ -698,16 +516,13 @@
           </tbody>
         </table>
       </div>
-
     </div>
 
     <!-- Summary -->
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           Summary
           <div class="badge">{{ summaryLineItem?.length }}</div>
         </div>
@@ -752,16 +567,13 @@
           </table>
         </div>
       </div>
-
     </div>
 
     <!-- Terms and Conditions -->
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-attach"></use>
-          </svg>
+
           Terms and Conditions
           <div class="badge">{{ termsAndConditions?.value }}</div>
         </div>
@@ -776,7 +588,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

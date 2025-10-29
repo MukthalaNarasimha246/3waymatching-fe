@@ -37,7 +37,6 @@ export class DataClassificationComponent implements OnDestroy {
   splashProgress = 0;
   verificationStatus: any = 'not_verified';
   isAddCaseOpen = false;
-  isLoader = false
   totalClaims = 11;
   totalPages = 286;
   selectedDocType: string = 'invoice'; // Default selected document type
@@ -48,7 +47,7 @@ export class DataClassificationComponent implements OnDestroy {
   cliamIds: any
   image_orginal_image: any
   document: any
-  invoiceDetails: any = {}
+  invoiceDetails: any;
   supplierDetails: any;
   buyerDetails: any;
   shippingDetails: any;
@@ -87,11 +86,8 @@ export class DataClassificationComponent implements OnDestroy {
   searchText1: string = 'romashka';
   imageSrc: any; // Replace with your image
   ctx!: CanvasRenderingContext2D;
-  private image = new Image();
-  private scale = 1;
   detectedWords: any;
-  // docList:any;
-  // docCategoryList:any
+
   docCategoryList: Record<string, string[]> = {
     'Id Proof': ["Passport", "AadharCard", "VoterID", "PANCard"],
     'Diagnostic Report': ["DiagnosticReports", "Biocam", "Pathology", "Histpathology", "MicroBiology", "Heamatology", "Ultrasound", "MRI_CT_USG_Report", "MRI_CT_USG_Scan",
@@ -100,22 +96,21 @@ export class DataClassificationComponent implements OnDestroy {
     'Medical Bills': ["HospitalBill", "MedicalBills", "Pharmasybills", "Opdbills"],
     'Claim Form': ["ClaimForm", "Letters", "Emails"],
     'Cheque': ["Cheque", "Bankpassbook", "Bankstatement"],
-    // "X-ray & Scan":[ "MRI_CT_USG_Scan",
-    //   "X-ray",],
+
     'Others': ["Utility"]
 
   };
 
+  isLoader: any
+
   based_on_cliamId_list_flag_list: any
-
-
-
   docList = [
     'Aadhaar', 'Agreement', 'Bill of Supply', 'Claims', 'Diagnostic Report',
     'Discharge Summary', 'Growth Scan', 'Hospital Bill', 'Inpatient Credit Bill',
     'Medical Prescription', 'PAN', 'Policy Document', 'Purchase Order',
     'Tax Invoice', 'e-invoice', 'eway bill', "MRN"
   ]
+
 
   pollingIntervals: any = {};
   cases: any[] = [];
@@ -154,16 +149,15 @@ export class DataClassificationComponent implements OnDestroy {
               <line x1="9" y1="15" x2="15" y2="15"></line>
             </svg>`
     },
-    {
-      id: 'review',
-      label: 'Review',
-      icon: `<svg class="icon" viewBox="0 0 24 24" width="20" height="20">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>`
-    }
+    // {
+    //   id: 'review',
+    //   label: 'Review',
+    //   icon: `<svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+    //           <circle cx="11" cy="11" r="8"></circle>
+    //           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    //         </svg>`
+    // }
   ];
-
 
   extraction_tabs = [
     {
@@ -219,8 +213,11 @@ export class DataClassificationComponent implements OnDestroy {
   loading = false;
   showModal = false;
   private pollingSubscription!: any;
-  private intervalId: any;
 
+  progress = 0; // % value
+  progressData: any = { processed_count: 0, total_count: 0 };
+
+  private timer: any;
 
 
   constructor(private http: HttpClient, private projectService: ProjectsService, private router: Router, private cdr: ChangeDetectorRef, private fb: FormBuilder, private _commonService: CommonServiceService,) { }
@@ -234,7 +231,6 @@ export class DataClassificationComponent implements OnDestroy {
         this.closeAddCase();
       }
     });
-
 
     this.classification_obj = this.fb.group({
       "claim_id": [''],
@@ -289,15 +285,13 @@ export class DataClassificationComponent implements OnDestroy {
   toggleInvoiceInfo(image: any) {
     this.isdocumentVisible = !this.isdocumentVisible;
     this.imageDocView = image
-    console.log(this.imageDocView, 'imsgesrd');
-
 
     this.imagePath = `assets/output_images/${image.claim_id}/${image.image}`;
     this.selectedValue = image.top_label
     this.classification_obj.controls['claim_id'].setValue(image.claim_id)
     this.classification_obj.controls['img'].setValue(image.image)
     this.classification_obj.controls['top_label'].setValue(image.top_label)
-    this.image_url = `http://127.0.0.1:8001/files/${image.image}`
+    this.image_url = `${environment.idpUrlUpload}/files/${image.image}`
   }
   toggleInvoiceInfo_close() {
     this.isdocumentVisible = !this.isdocumentVisible;
@@ -322,8 +316,6 @@ export class DataClassificationComponent implements OnDestroy {
 
 
   generateBatchFolderName(): string {
-
-    const project_id = localStorage.getItem('project_id')
     const now = new Date();
     const pad = (n: number) => n.toString().padStart(2, '0');
 
@@ -335,52 +327,72 @@ export class DataClassificationComponent implements OnDestroy {
     const seconds = pad(now.getSeconds());
 
     const dateStr = `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
-    return `BATCH_${project_id}_${dateStr}`;
+    return `BATCH_${dateStr}`;
   }
 
-  batch_id = ''
+
 
   handleFileUpload(event: any): void {
+    const token = localStorage.getItem('authToken');
+    const selectedFiles: FileList = event.target.files;
 
+    if (!selectedFiles || selectedFiles.length === 0) {
+      console.error('No files selected');
+      return;
+    }
 
-    const token = localStorage.getItem('authToken')
-    this.file = event.target.files[0];
-
-    const batchId = this.generateBatchFolderName()
-
-
-
+    const batchId = this.generateBatchFolderName();
     const formData = new FormData();
-    formData.append('file', this.file);
+
+    // 🔥 Append multiple files with the correct key name "files"
+    for (let i = 0; i < selectedFiles.length; i++) {
+      formData.append('files', selectedFiles[i]);
+    }
+
+    // 🔹 Show overlay and initialize progress tracking
+    this.isLoader = true; // activates your overlay template
+    this.progress = 0;
+    this.progressData = {
+      processed_count: 0,
+      total_count: selectedFiles.length
+    };
+
     this.isAddCaseOpen = false;
-    this.loading = true
+    this.loading = true;
 
+
+
+    // 🚀 Start upload
     this.http.post(`${environment.idpUrlUpload}/upload/${token}/${batchId}`, formData)
-      .subscribe((response: any) => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'File Uploaded Successful!',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.loading = false
-        this.pdf_conversion_hypotus()
-        this.classification_details()
+      .subscribe({
+        next: (response: any) => {
+          console.log('✅ Upload response:', response);
+          // 🕒 Start polling backend progress every second
+          this.startProgressPolling(batchId);
+          this.loading = false;
+          // this.stopProgressPolling(); // stop polling after upload finishes
 
-      }, (error: any) => {
-        console.error('File upload failed', error);
+          this.progress = 100;
 
-      })
-    // refresh every 5 seconds
-    this.getProgress(batchId)
+          // Optional: hide overlay after short delay
+          setTimeout(() => this.isLoader = false, 5000);
 
-
-
-
+          // Call next functions after successful upload
+          this.pdf_conversion_hypotus();
+          this.classification_details();
+        },
+        error: (error: any) => {
+          console.error('❌ File upload failed', error);
+          this.loading = false;
+          this.stopProgressPolling();
+          this.isLoader = false;
+        }
+      });
   }
+
+
+
+
   onDocTypeChange(event: any): void {
     this.selectedDocType = event.target.value;
     // You can add logic here to handle the change in document type
@@ -460,10 +472,12 @@ export class DataClassificationComponent implements OnDestroy {
 
 
   reviewImage(image: any): void {
+    console.log('Reviewing image:', image);
     // Add logic to handle image review
   }
 
   summarizeClaim(claim: any): void {
+    console.log('Summarizing claim:', claim);
     // Add logic to handle claim summarization
   }
 
@@ -477,6 +491,7 @@ export class DataClassificationComponent implements OnDestroy {
 
     if (this.activeTab == 'extraction') {
       this.list_top_class = this.filterByTopLabel(this.review_data, tab)
+      console.log(this.list_top_class, 'class');
 
     }
   }
@@ -512,11 +527,6 @@ export class DataClassificationComponent implements OnDestroy {
       this.cliamIds.forEach((claimId: string) => {
         this.startPollingClaimStatus(claimId);
       });
-
-
-
-
-
 
       //Flag related code here
 
@@ -563,6 +573,37 @@ export class DataClassificationComponent implements OnDestroy {
     })
   }
 
+  // Function to start polling for a claim
+  startPollingClaimStatus(claimId: string) {
+    this.projectService.getFilesByBatch(claimId).subscribe((res: any) => {
+      if (res.files && res.files.length > 0) {
+        const status = res.files[0].status;
+
+        // Update your classification_data objects with this claimId
+        this.classificaiton_data = this.classificaiton_data.map((item: any) => {
+          if (item.claim_id === claimId) {
+            return { ...item, status }; // append status
+          }
+          return item;
+        });
+
+
+        this.based_on_cliamId_list = this.groupByClaimId(this.classificaiton_data)
+        console.log(this.based_on_cliamId_list, 'based correct');
+
+
+
+        // Stop polling if completed
+        if (status === 'completed') {
+          clearInterval(this.pollingIntervals[claimId]);
+          delete this.pollingIntervals[claimId];
+        }
+      }
+    });
+
+  }
+
+
 
 
 
@@ -576,35 +617,22 @@ export class DataClassificationComponent implements OnDestroy {
     }, {});
   }
 
+
+
+
+
+
+
+
   activeClaimId: any
-  tabs_dynamically: any
   showextraction(claim: any) {
-    this.activeClaimId = claim;
-    this.review_data = this.based_on_cliamId_list[claim];
-    console.log(this.review_data, 'review_data')
-    this.tabs_dynamically = this.getUniqueTopLabels(this.review_data);
-    this.activeTabs = this.tabs_dynamically[0]['value'];
+    console.log(claim,);
 
-    this.list_top_class = this.filterByTopLabel(this.review_data, this.tabs_dynamically[0]['value']);
-    this.setActiveTab('extraction');
-
-
+    this.activeClaimId = claim
+    this.review_data = this.based_on_cliamId_list[claim]
+    this.list_top_class = this.filterByTopLabel(this.review_data, 'Purchase Order')
+    this.setActiveTab('extraction')
   }
-
-
-
-
-  getUniqueTopLabels(data: any) {
-    const labels = data.map((item: any) => item.top_label);
-    const uniqueLabels = Array.from(new Set(labels));
-
-    // Map to the desired object format
-    return uniqueLabels.map(label => ({
-      label: label,
-      value: label
-    }));
-  }
-
 
 
 
@@ -616,12 +644,18 @@ export class DataClassificationComponent implements OnDestroy {
 
 
 
-  ngAfterViewInit() {
+  ngAfterViewInit(image: any, testingItem: any) {
+
+
+
+    // alert(image)
+    // alert(testingItem)
+    // this.loadImage(image);
+    // this.extractTextFromImage();
+    this.detectedWords = this.testing(testingItem)
+
     this.loadthesidenav()
   }
-
-
-
 
   loadthesidenav() {
     this._commonService.updateSidebarOptionFlag();
@@ -632,7 +666,20 @@ export class DataClassificationComponent implements OnDestroy {
 
     });
   }
+  loadImage(image: any) {
 
+    const canvas = this.canvas.nativeElement;
+    this.ctx = canvas.getContext('2d')!;
+    const img = new Image();
+    img.src = image;
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      this.ctx.drawImage(img, 0, 0);
+    };
+    this.searchImage_value = image
+  }
   searchInImage(e: any) {
     const searchValue = e.target.value.trim().toLowerCase();
     // alert(searchValue)
@@ -647,6 +694,7 @@ export class DataClassificationComponent implements OnDestroy {
       if (!searchValue) return; // If input is empty, don't highlight
 
       this.detectedWords.forEach((word: any) => {
+        console.log("word.text.toLowerCase().includes(searchValue)", word.text.toLowerCase().includes(searchValue))
         if (word.text.toLowerCase().includes(searchValue)) {
           const x = word.bbox[0][0]; // Top-left X
           const y = word.bbox[0][1]; // Top-left Y
@@ -667,7 +715,6 @@ export class DataClassificationComponent implements OnDestroy {
       return this.detectedWords
     })
   }
-
 
 
 
@@ -738,7 +785,37 @@ export class DataClassificationComponent implements OnDestroy {
 
 
 
+  fetch_progress_bar(batchId: any) {
+    this.loading = true
+    // Clear any previous interval if exists
+    if (this.pollingSubscription) {
+      clearInterval(this.pollingSubscription);
+    }
 
+    this.pollingSubscription = setInterval(() => {
+      this.projectService.get_progress_bar_count(batchId).subscribe({
+        next: (data: any) => {
+          this.processedCount = data.processed_count;
+          this.totalCount = data.total_count;
+          this.progressPercentage = (this.processedCount / this.totalCount) * 100;
+
+          // Stop polling when complete
+          if (this.processedCount === this.totalCount) {
+            // this.loading = false;
+            this.showModal = true;
+            clearInterval(this.pollingSubscription);
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching progress:', err);
+          // Optional: continue polling even on errors (e.g., 404)
+          // Do nothing here so next tick still runs
+        }
+      });
+
+
+    }, 2000); // Poll every 2 seconds
+  }
 
 
   activeImageId: any
@@ -748,59 +825,22 @@ export class DataClassificationComponent implements OnDestroy {
     this.activeDocId = doc.id;
     this.image_orginal_image = `http://localhost:8001/files/${doc['image']}`
     this.fetchDocument(doc['image'])
-
     this.refreshVariable()
 
-    // Ensure canvas exists
-    setTimeout(() => {
-      const canvasEl = this.canvas?.nativeElement;
-      if (!canvasEl) {
-        console.error('Canvas is undefined!');
-        return;
-      }
-
-      this.ctx = canvasEl.getContext('2d')!;
-      this.loadImage()
-    }, 0);
-
-  }
-
-  private originalWidth = 0;
-  private originalHeight = 0;
-
-  loadImage() {
-    this.image.src = this.image_orginal_image || 'http://localhost:8001/images_files/68f9be114f25dde2f8db3f99';
-
-    this.image.onload = () => {
-      this.originalWidth = this.image.width;
-      this.originalHeight = this.image.height;
-
-      const canvasEl = this.canvas.nativeElement;
-      this.ctx = canvasEl.getContext('2d')!;
-
-      // Initial draw
-      this.scale = 1;
-      this.drawImage();
-    };
-
-    this.image.onerror = (err) => {
-      console.error('Failed to load image', err);
-    };
   }
 
 
 
   purchaseOrderDetails: any
   mrnDetails: any
-  ewaybillDetail: any
-  fetchData: any
   fetchBatchData: any
+  fetchData: any
+
   fetchDocument(fileId: any) {
     this.projectService.getDocumentByFileId(fileId).subscribe({
       next: (res: any) => {
-        this.fetchBatchData = res
-
         console.log(this.activeTabs);
+        this.fetchBatchData = res
         this.fetchData = res['llm_parse_json']
 
 
@@ -808,6 +848,7 @@ export class DataClassificationComponent implements OnDestroy {
         switch (this.activeTabs) {
           case 'Tax Invoice':
             this.invoiceDetails = res['llm_parse_json'];
+            console.log('Invoice document loaded');
             this.summaryLineItem = [
               {
                 "total_cgst_amount": this.invoiceDetails?.total_cgst_amount,
@@ -827,7 +868,9 @@ export class DataClassificationComponent implements OnDestroy {
 
           case 'Purchase Order':
             this.purchaseOrderDetails = res['llm_parse_json'];
+            console.log(this.purchaseOrderDetails, 'purseeee');
 
+            console.log('Purchase Order document loaded');
 
             break;
 
@@ -835,19 +878,6 @@ export class DataClassificationComponent implements OnDestroy {
             this.mrnDetails = res['llm_parse_json'];
             console.log('MRN document loaded');
             break;
-          case 'eway bill':
-            this.ewaybillDetail = res['llm_parse_json'];
-            console.log(this.ewaybillDetail);
-
-            console.log('eway bill document loaded');
-            break;
-          case 'e-invoice':
-            this.invoiceDetails = res['llm_parse_json'];
-            console.log(this.ewaybillDetail);
-
-            console.log('eway bill document loaded');
-            break;
-
 
           default:
             console.warn('Unknown document type');
@@ -865,13 +895,6 @@ export class DataClassificationComponent implements OnDestroy {
 
 
 
-  // Initialize verification flags
-  GSTIN_verified = false;
-  PAN_verified = false;
-  MSME_verified = false;
-  CIN_verified = false;
-  BANK_verified = false;
-
   gstinVerfiedObject: any = null
   verifie_loader_text = ''
 
@@ -882,12 +905,11 @@ export class DataClassificationComponent implements OnDestroy {
 
     this.projectService.verifyGstin(gstin).subscribe({
       next: (res: any) => {
+        console.log(res, 'response');
         this.gstinVerfiedObject = res?.result
         this.verificationStatus = res?.result.status
-        this.GSTIN_verified = res?.result?.status == 'id_found' || false;
         this.isVerifying = false
         this.verifie_loader_text = ''
-        this.callAfterVerifiedCompleted();
       },
       error: (erro) => {
         console.log(erro);
@@ -907,14 +929,14 @@ export class DataClassificationComponent implements OnDestroy {
     this.verifie_loader_text = 'Verifying the PAN number'
     this.projectService.verifyPan(pan).subscribe({
       next: (res: any) => {
+        console.log(res, 'PAN verification response');
         this.panVerifiedObject = res?.result?.details
         this.verificationStatusPan = res?.result?.status;
-        this.PAN_verified = res?.result?.status == 'id_found' || false
         this.isVerifying = false
         this.verifie_loader_text = ''
-        this.callAfterVerifiedCompleted()
       },
       error: (err) => {
+        console.log(err);
         this.isVerifying = false
         this.verifie_loader_text = ''
       }
@@ -947,6 +969,9 @@ export class DataClassificationComponent implements OnDestroy {
     const code = gstin?.substring(0, 2); // first 2 digits
     const state = gstinCodes?.gstinstateCode[code] || "Unknown State";
 
+    console.log(code, 'state code');
+    console.log(state, 'state name');
+
     return { code, state };
   }
 
@@ -969,7 +994,9 @@ export class DataClassificationComponent implements OnDestroy {
 
   onLoaderChange(isLoading: boolean) {
     this.loading = isLoading;
+    console.log(this.loading, 'loading.......');
 
+    console.log('Loader state from child:', isLoading);
   }
 
 
@@ -983,12 +1010,11 @@ export class DataClassificationComponent implements OnDestroy {
     this.verifie_loader_text = 'Verifying the PAN number'
     this.projectService.verifyMems(pan).subscribe({
       next: (res: any) => {
+        console.log(res, 'UAN verification response');
         this.memsVerifiedObject = res
         this.verificationStatusMems = res?.status;
-        this.BANK_verified = res?.status == 'succes' || false
         this.isVerifying = false
         this.verifie_loader_text = ''
-        this.callAfterVerifiedCompleted()
       },
       error: (err) => {
         console.log(err);
@@ -1001,40 +1027,6 @@ export class DataClassificationComponent implements OnDestroy {
 
 
 
-  // Function to start polling for a claim
-  startPollingClaimStatus(claimId: string) {
-    if (this.pollingIntervals[claimId]) return; // Avoid duplicate polling
-
-    this.pollingIntervals[claimId] = setInterval(() => {
-      this.projectService.getFilesByBatch(claimId).subscribe((res: any) => {
-        if (res.files && res.files.length > 0) {
-          const status = res.files[0].status;
-
-          // Update your classification_data objects with this claimId
-          this.classificaiton_data = this.classificaiton_data.map((item: any) => {
-            if (item.claim_id === claimId) {
-              return { ...item, status }; // append status
-            }
-            return item;
-          });
-
-
-
-
-          this.based_on_cliamId_list = this.groupByClaimId(this.classificaiton_data)
-
-
-
-
-          // Stop polling if completed
-          if (status === 'completed') {
-            clearInterval(this.pollingIntervals[claimId]);
-            delete this.pollingIntervals[claimId];
-          }
-        }
-      });
-    }, 5000); // poll every 5 seconds
-  }
 
 
 
@@ -1073,18 +1065,16 @@ export class DataClassificationComponent implements OnDestroy {
 
     this.projectService.verifybd(back_no, ifsc_code).subscribe({
       next: (res: any) => {
+        console.log(res, 'UAN verification response');
         this.verified_back_details = res?.result;
-        if (this.verified_back_details) {
-          this.BANK_verified = true
-        }
         this.isVerifying = false
-        this.callAfterVerifiedCompleted()
       },
       error: (err) => {
         this.isVerifying = false
       }
     });
   }
+
 
 
   checkHitlStatus(array: any[]) {
@@ -1102,48 +1092,36 @@ export class DataClassificationComponent implements OnDestroy {
   }
 
 
+  extractedActiveTab: string = 'Image';
 
-
-  drawImage() {
-    const canvas = this.canvas.nativeElement;
-
-    // Set canvas size based on scaled image
-    canvas.width = this.image.width * this.scale;
-    canvas.height = this.image.height * this.scale;
-
-    // Clear canvas
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    console.log(this.image, 'imagesss');
-
-
-    // Draw image
-    this.ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height);
+  setExtractedActiveTab(tab: string) {
+    this.extractedActiveTab = tab;
+    this.loadMdFile()
+    this.loadTxtFile()
   }
 
-  zoomIn() {
-    console.log(this.scale, 'scc');
+  mdContent: string | null = null;
 
-    if (this.scale < 5) { // max zoom
-      this.scale *= 1.2;
-      this.drawImage();
-    }
+  loadMdFile() {
+    const md_file = this.fetchBatchData?.ocr_text_file_id_md
+    this.http.get(`${environment.idpUrlUpload}/files/${md_file}`, { responseType: 'text' })
+      .subscribe({
+        next: (data) => this.mdContent = data,
+        error: (err) => console.error('❌ Error loading Markdown:', err)
+      });
   }
 
-  zoomOut() {
-    if (this.scale > 0.1) { // min zoom
-      this.scale /= 1.2;
-      this.drawImage();
-    }
-  }
 
-  toggleFullScreen() {
-    const canvas = this.canvas.nativeElement;
-    if (!document.fullscreenElement) {
-      canvas.requestFullscreen().catch(err => console.error(err));
-    } else {
-      document.exitFullscreen();
-    }
+  txtContent: string | null = null
+
+  loadTxtFile() {
+    const text_file = this.fetchBatchData?.ocr_text_file_id_txt
+
+    this.http.get(`${environment.idpUrlUpload}/files/${text_file}`, { responseType: 'text' })
+      .subscribe({
+        next: (data) => this.txtContent = data,
+        error: (err) => console.error('❌ Error loading text file:', err)
+      });
   }
 
 
@@ -1216,8 +1194,6 @@ export class DataClassificationComponent implements OnDestroy {
 
 
 
-
-
   saveinvoicedetails(data: any) {
     console.log('Updated invoice details:', this.invoiceDetails);
 
@@ -1257,87 +1233,6 @@ export class DataClassificationComponent implements OnDestroy {
   }
 
 
-
-  saveinvoicedetailsOutput(data: any) {
-    try {
-      const manualJson = data // parse string to JSON
-      this.projectService
-        .updateLLMParseJson(this.activeImageId, manualJson)
-        .subscribe(
-          (res) => {
-            console.log(res);
-            if (res) {
-              Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Date Updated Successfully',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
-              });
-              this.fetchDocument(this.activeImageId)
-              this.reset_variable()
-            }
-
-
-          },
-          (err) => {
-            console.error(err);
-          }
-        );
-    } catch (e) {
-      alert('Invalid JSON');
-    }
-
-  }
-
-
-
-  isJsonPopupOpen = false;
-
-  // Original JSON
-  jsonData = {
-    name: "John Doe",
-    age: 30,
-    email: "john@example.com"
-  };
-
-  // Editable copy for the popup
-  editableJson: any = {};
-
-  // Open popup
-  openJsonPopup() {
-    this.editableJson = JSON.parse(JSON.stringify(this.jsonData)); // Deep copy
-    this.isJsonPopupOpen = true;
-  }
-
-  // Close popup without saving
-  closeJsonPopup() {
-    this.isJsonPopupOpen = false;
-  }
-
-  // Save JSON changes
-  saveJson() {
-    this.jsonData = JSON.parse(JSON.stringify(this.editableJson)); // Save changes
-    console.log("Saved JSON:", this.jsonData);
-    this.isJsonPopupOpen = false;
-  }
-
-  // Optional: track changes
-  onJsonChange(updatedJson: any) {
-    this.editableJson = updatedJson;
-  }
-
-
-
-  //  invoiceDetails = {
-  //   line_items: [
-  //     { item_name: 'Item A', hsn: '1001', item_qty: 2, unit_price: 50, total_retail_price: 100, isEditing: false },
-  //     { item_name: 'Item B', hsn: '1002', item_qty: 1, unit_price: 75, total_retail_price: 75, isEditing: false }
-  //   ]
-  // };
-
   editRow(index: number) {
     this.invoiceDetails.line_items[index].isEditing = true;
   }
@@ -1363,130 +1258,42 @@ export class DataClassificationComponent implements OnDestroy {
     this.invoiceDetails.line_items.splice(index, 1);
   }
 
-  calculateTotal(row: any) {
-    return row.item_qty * row.unit_price;
+
+
+  startProgressPolling(batchId: any) {
+    console.log(batchId, 'batchup');
+
+    this.timer = setInterval(() => {
+      this.http.get<any>(`${environment.idpUrlUpload}/progress/${batchId}`)
+        .subscribe(progress => {
+          if (progress && progress.total_files) {
+            const processed = progress.uploaded_count || 0;
+            const total = progress.total_files;
+            this.progress = Math.round((processed / total) * 100);
+            this.progressData = {
+              processed_count: processed,
+              total_count: total
+            };
+            console.log(this.progressData, 'datata');
+
+            if (progress.status === 'completed') {
+              this.stopProgressPolling();
+              this.progress = 100;
+              console.log
+                ('stoped')
+              setTimeout(() => this.isLoader = false, 1000);
+            }
+          }
+        });
+    }, 1000);
   }
 
-
-  extractedActiveTab: string = 'Image';
-
-  setExtractedActiveTab(tab: string) {
-    this.extractedActiveTab = tab;
-    this.loadMdFile()
-    this.loadTxtFile()
+  stopProgressPolling() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
   }
-
-  mdContent: string | null = null;
-
-  loadMdFile() {
-    const md_file = this.fetchBatchData?.ocr_text_file_id_md
-    this.http.get(`http://127.0.0.1:8001/files/${md_file}`, { responseType: 'text' })
-      .subscribe({
-        next: (data) => this.mdContent = data,
-        error: (err) => console.error('❌ Error loading Markdown:', err)
-      });
-  }
-
-
-  txtContent: string | null = null
-
-  loadTxtFile() {
-    const text_file = this.fetchBatchData?.ocr_text_file_id_txt
-
-    this.http.get(`http://127.0.0.1:8001/files/${text_file}`, { responseType: 'text' })
-      .subscribe({
-        next: (data) => this.txtContent = data,
-        error: (err) => console.error('❌ Error loading text file:', err)
-      });
-  }
-
-
-  callAfterVerifiedCompleted() {
-    const payload = {
-      GSTIN_verified: true,
-      PAN_verified: this.PAN_verified,
-      MSME_verified: this.MSME_verified,
-      CIN_verified: this.CIN_verified,
-      BANK_verified: this.BANK_verified,
-    };
-
-    this.http.post(`http://127.0.0.1:8001/validate_third_party/${this.activeImageId}`, payload)
-      .subscribe({
-        next: (res) => console.log('✅ Third-party validation called successfully!', res),
-        error: (err) => console.error('❌ Error calling third-party validation', err)
-      });
-  }
-
-
-
-  // progressData: any = null;
-  // progress: number = 0;
-
-
-  // getProgress(batchId: string) {
-  //   console.log(batchId, 'Batch ID');
-  //   this.isLoader = true;
-
-  //   // Start polling every 2 seconds (adjust if needed)
-  //   this.intervalId = setInterval(() => {
-  //     this.projectService.get_progress_bar_count(batchId).subscribe({
-  //       next: (res: any) => {
-  //         this.progressData = res;
-  //         console.log(this.progressData, 'Progress Data');
-
-  //         // Calculate progress percentage
-  //         this.progress = Math.min(
-  //           (this.progressData?.processed_count / this.progressData?.total_count) * 100,
-  //           100
-  //         );
-
-  //         // Stop polling and hide loader when all files processed
-  //         if (this.progressData.processed_count >= this.progressData.total_count) {
-  //   this.classification_details()
-  //                this.pdf_conversion_hypotus()
-
-
-  //           clearInterval(this.intervalId);
-  //           this.intervalId = null;
-  //           this.isLoader = false;
-  //           console.log('✅ All files processed, loader hidden.');
-  //         }
-  //       },
-  //       error: (err) => {
-  //         // console.error('Error loading progress', err);
-  //         // clearInterval(this.intervalId);
-  //         // this.isLoader = false;
-  //       }
-  //     });
-  //   }, 2000); // polling interval
-  // }
-
-
-  progressData: any = 0;
-  // isLoader: boolean = false;
-  // intervalId: any = null;
-
-  getProgress(batchId: string) {
-    console.log(batchId, 'Batch ID');
-    this.isLoader = true;
-
-    this.projectService.get_progress_bar_count(batchId).subscribe({
-      next: (res: any) => {
-        this.progressData = res;
-        console.log(this.progressData, 'Progress Data');
-
-        // Show overlay for 5 seconds
-        setTimeout(() => {
-          this.isLoader = false;
-        }, 5000);
-      },
-      error: (err) => {
-        // console.error('Error loading progress', err);
-        // this.isLoader = false;
-      }
-    });
-  }
-
 
 
 

@@ -1,0 +1,387 @@
+
+.main-review{
+  width: 100%;
+  display: grid
+;
+  overflow: hidden;
+}
+.cases-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: solid 1px #dfdfdf;
+
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    position: relative;
+    padding-left: 12px;
+  margin: 5px 0;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background-color: #5925DC;
+      border-radius: 4px;
+    }
+  }
+}
+
+.org-chart-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #f9fafb, #f0f4f8);
+  border-radius: 12px;
+
+  .org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: max-content;
+    padding: 20px 0;
+  }
+}
+
+.org-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .org-node-container {
+    margin: 15px 25px;
+    position: relative;
+
+    .org-node {
+      padding: 14px 18px;
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04),
+                  0 1px 4px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      min-width: 210px;
+      position: relative;
+      transition: all 0.25s ease;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(65, 132, 247, 0.1),
+                    0 2px 6px rgba(65, 132, 247, 0.08);
+        border-color: rgba(65, 132, 247, 0.2);
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #4285f4, #0f9d58);
+        border-radius: 8px 8px 0 0;
+        opacity: 0.7;
+      }
+
+      .avatar-container {
+        margin-right: 14px;
+        display: none;
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background-color: #4285f4;
+          background-size: cover;
+          background-position: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-weight: 600;
+          font-size: 16px;
+          box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+          border: 2px solid white;
+        }
+      }
+
+      .node-details {
+        display: flex;
+        flex-direction: column;
+
+        .node-name {
+          font-weight: 600;
+          font-size: 15px;
+          color: #202124;
+          letter-spacing: -0.2px;
+        }
+
+        .node-title {
+          font-size: 13px;
+          color: #5f6368;
+          margin-top: 4px;
+          font-weight: 500;
+        }
+
+        .node-company {
+          font-size: 12px;
+          color: #4285f4;
+          margin-top: 3px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .org-children-container {
+    position: relative;
+    padding-top: 25px;
+
+    .org-children-connector {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 25px;
+      background: linear-gradient(to bottom, #a8c7fa, #d2e3fc);
+      transform: translateX(-50%);
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        background-color: #4285f4;
+        border-radius: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .org-children {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      position: relative;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: linear-gradient(to right, #d2e3fc, #a8c7fa, #d2e3fc);
+      }
+
+      .org-child-branch {
+        position: relative;
+        padding-top: 25px;
+        margin: 0 15px;
+
+        .org-vertical-line {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 2px;
+          height: 25px;
+          background: linear-gradient(to bottom, #a8c7fa, #d2e3fc);
+          transform: translateX(-50%);
+
+          &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            transform: translateX(-50%);
+          }
+        }
+
+        &.first {
+          .org-vertical-line {
+            &:before {
+              content: '';
+              position: absolute;
+              top: 0;
+              right: 0;
+              width: 50%;
+              height: 2px;
+              background-color: #f9fafb;
+            }
+          }
+        }
+
+        &.last {
+          .org-vertical-line {
+            &:before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 50%;
+              height: 2px;
+              background-color: #f9fafb;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Different styling for different hierarchy levels
+.org-level {
+  &:first-child {
+    > .org-node-container {
+      > .org-node {
+        background-color: #f8faff;
+        border-color: rgba(66, 133, 244, 0.2);
+
+        &:before {
+          background: linear-gradient(to right, #4285f4, #4285f4);
+          height: 5px;
+        }
+
+        .avatar-container {
+          .avatar {
+            width: 54px;
+            height: 54px;
+            border-color: #e8f0fe;
+            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.4);
+          }
+        }
+
+        .node-name {
+          font-size: 16px;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  // Styling for second level (executives)
+  .org-children-container {
+    .org-level {
+      &:first-child {
+        > .org-node-container {
+          > .org-node {
+            background-color: #fcfcff;
+
+            &:before {
+              background: linear-gradient(to right, #4285f4, #db4437);
+              height: 4px;
+            }
+          }
+        }
+      }
+
+      // Styling for third level (managers)
+      .org-children-container {
+        .org-level {
+          > .org-node-container {
+            > .org-node {
+              &:before {
+                background: linear-gradient(to right, #db4437, #f4b400);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive styles for smaller screens
+@media (max-width: 768px) {
+  .org-chart-container {
+    padding: 15px 10px;
+
+    .org-level {
+      .org-node-container {
+        margin: 10px 15px;
+
+        .org-node {
+          min-width: 180px;
+          padding: 10px 12px;
+
+          .avatar-container {
+            margin-right: 10px;
+
+            .avatar {
+              width: 40px;
+              height: 40px;
+              font-size: 14px;
+            }
+          }
+
+          .node-details {
+            .node-name {
+              font-size: 13px;
+            }
+
+            .node-title {
+              font-size: 11px;
+            }
+
+            .node-company {
+              font-size: 10px;
+            }
+          }
+        }
+      }
+
+      .org-children-container {
+        padding-top: 20px;
+
+        .org-children-connector {
+          height: 20px;
+        }
+
+        .org-children {
+          .org-child-branch {
+            padding-top: 20px;
+            margin: 0 10px;
+
+            .org-vertical-line {
+              height: 20px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Glass-like effect variant for modern UI
+.modern-glass {
+  .org-node {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+}
+
+// Print optimization
+@media print {
+  .org-chart-container {
+    padding: 0;
+    background: none;
+
+    .org-node {
+      box-shadow: none !important;
+      border: 1px solid #ddd !important;
+      page-break-inside: avoid;
+    }
+  }
+}

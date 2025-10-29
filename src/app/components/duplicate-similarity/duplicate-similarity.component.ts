@@ -3,6 +3,8 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { ProjectsService } from '../../services/projects.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment.prod';
+
 
 @Component({
   selector: 'app-duplicate-similarity',
@@ -50,7 +52,7 @@ export class DuplicateSimilarityComponent {
   // Remarks
   remarks = '';
 
-  constructor(private cdr: ChangeDetectorRef, private projectService: ProjectsService, private activaterouter: ActivatedRoute, private router: Router) { }
+  constructor(private cdr: ChangeDetectorRef, private router: Router, private projectService: ProjectsService, private activaterouter: ActivatedRoute) { }
 
   ngOnInit(): void {
     // Start splash screen progress
@@ -229,10 +231,6 @@ export class DuplicateSimilarityComponent {
 
     this.router.navigate(['/data-clasification']);
 
-
-
-
-
   }
 
   image_duplicates(id: any) {
@@ -240,11 +238,11 @@ export class DuplicateSimilarityComponent {
       console.log("responseresponse", response);
       this.image_duplicates_value = response
       if (response.duplicate_status == 'similarity Found') {
-        this.image_duplicates_image = `http://127.0.0.1:8001/similarity/${response['similarity_image']}`
+        this.image_duplicates_image = `${environment.idpUrlUpload}/similarity/${response['similarity_image']}`
       } else {
-        this.image_duplicates_image = `http://127.0.0.1:8001/images_duplicate/${response['target_image']}`
+        this.image_duplicates_image = `${environment.idpUrlUpload}/images_duplicate/${response['target_image']}`
       }
-      this.image_orginal_image = this.image_orginal_image = `http://localhost:8001/files/${response['reference_image']}`
+      this.image_orginal_image = this.image_orginal_image = `${environment.idpUrlUpload}/files/${response['reference_image']}`
 
 
       this.metricValues['image'] = this.checkPercentage(this.image_duplicates_value['feature_similarity'])

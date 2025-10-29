@@ -14,7 +14,7 @@
     --info: #3b82f6;
 }
 
-body.dark {
+[data-theme="dark"] {
     --primary: #3a96dd;
     --primary-hover: #5ba7e0;
     --bg: #1a1a1a;
@@ -234,6 +234,10 @@ body {
 
 .page-header {
     margin-bottom: 8px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .page-title {
@@ -884,7 +888,7 @@ tr:hover {
 }
 
 .btn-primary {
-    background: var(--primary);
+    // background: var(--primary);
     border-color: var(--primary);
     color: white;
 }

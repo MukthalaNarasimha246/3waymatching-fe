@@ -11,6 +11,5 @@ export const environment = {
   apiUrl: 'http://127.0.0.1:8011',
   pupayUrl: 'http://127.0.0.1:8006',
   idpUrlUpload:"http://localhost:8001",
-  idfyService:"http://127.0.0.1:8004",
-  ollamaService:"http://127.0.0.1:8005"
+  idfyService:"http://127.0.0.1:8004"
 };

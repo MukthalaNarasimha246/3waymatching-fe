@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('authToken', payload?.access_token);
 
             this.authService.login();
-            this.router.navigate(['/projects']);
+            this.router.navigate(['/dashboard']);
           } else {
             Swal.fire({
               icon: 'error',

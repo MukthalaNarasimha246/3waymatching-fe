@@ -1,0 +1,2341 @@
+<!-- Fullscreen Loader -->
+<!-- <div>
+  <app-loader></app-loader>
+</div> -->
+
+
+<!-- Only show when still processing -->
+<div class="progress-overlay" *ngIf="isLoader">
+  <div class="progress-container">
+    <div class="progress-header">
+      <span>Processing Files...</span>
+      <span class="progress-percent">{{ progress | number:'1.0-0' }}%</span>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+
+    <div class="progress-stats">
+      {{ progressData?.processed_count }} / {{ progressData?.total_count }} files processed
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <div class="progress-overlay" *ngIf="isLoader">
+  <div class="progress-container">
+    <div class="progress-header">
+      <span>Total Files:</span>
+      <span class="progress-total">{{ progressData?.total_count }}</span>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+
+<!-- case-management.component.html -->
+<div class="app-container-div">
+  <!-- Top Navigation -->
+  <div class="main-nav">
+    <div class="nav-items">
+      <div *ngFor="let tab of tabs" class="nav-item" [class.active]="activeTab === tab.id"
+        (click)="setActiveTab(tab.id)">
+        <!-- Use direct SVG elements instead of innerHTML binding -->
+        <svg *ngIf="tab.id === 'upload'" class="icon" viewBox="0 0 24 24" width="20" height="20">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+
+        <svg *ngIf="tab.id === 'classification'" class="icon" viewBox="0 0 24 24" width="20" height="20">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+          <line x1="7" y1="7" x2="7.01" y2="7"></line>
+        </svg>
+
+        <svg *ngIf="tab.id === 'extraction'" class="icon" viewBox="0 0 24 24" width="20" height="20">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <line x1="9" y1="15" x2="15" y2="15"></line>
+        </svg>
+
+        <svg *ngIf="tab.id === 'review'" class="icon" viewBox="0 0 24 24" width="20" height="20">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+
+        {{ tab.label }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content tab-pane" *ngIf="activeTab === 'upload'">
+    <div class="cases-header">
+      <h2>Case Management</h2>
+      <button class="btn-primary" (click)="toggleAddCase()">
+        <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Upload Document
+      </button>
+    </div>
+    <!-- {{pdf_list | json}} -->
+    <!-- Cases Table -->
+    <div class="table-container">
+      <table class="cases-table">
+        <thead>
+          <tr>
+            <th>Case Id</th>
+            <th>No.of pdf</th>
+            <th>No.of Pages</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let case of pdf_list">
+            <td>{{ case.claim_id }}</td>
+            <!-- <td>{{ case.claimId }}</td> -->
+            <td>{{ case.num_pdfs }}</td>
+            <td>{{case. num_images}}</td>
+            <td>
+
+              <!-- {{ case.status }} -->
+              <div class="stepper-container">
+                <div class="stepper">
+                  <div class="step" [ngClass]="{
+    'completed': isStepCompleted(case.status, case.currentStep, 'Exact Duplicate Found', 1),
+    'status-error': case.status === 'Exact Duplicate Found' || case.status === 'similarity Found',
+    'similarity-duplicate': case.status === 'similarity Found',
+    'pending': !isStepCompleted(case.status, case.currentStep, 'Exact Duplicate Found', 1)
+  }">
+                    <div class="step-circle">1</div>
+                    <div class="step-label"> {{ case.status === 'similarity Found' ? 'Similarity' : 'Duplicate' }}</div>
+                  </div>
+
+                  <div class="step" [ngClass]="{
+             'completed': isStepCompleted(case.status, case.currentStep, 'Po No not mapped', 2),
+             'status-success': case.status === 'Po No not mapped' && case.currentStep >= 2,
+             'pending': !isStepCompleted(case.status, case.currentStep, 'Po No not mapped', 2)
+           }">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">PO</div>
+                  </div>
+                  <!-- {{case.status}} -->
+                  <div class="step" [ngClass]="{
+             'completed': isStepCompleted(case.status, case.currentStep, 'Checklist Failed', 3),
+             'pending': !isStepCompleted(case.status, case.currentStep, 'Checklist Failed', 3)
+           }">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Audit</div>
+                  </div>
+
+                  <div class="step" [ngClass]="{
+             'completed': isStepCompleted(case.status, case.currentStep, 'Reconciliation', 4),
+             'status-reconciliation': case.status === 'Reconciliation',
+             'pending': !isStepCompleted(case.status, case.currentStep, 'Reconciliation', 4)
+           }">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Reconciliation</div>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; gap: 10px">
+                <button class="btn-review" (click)="reviewCase(case)">
+                  <svg class="icon-sm" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <!-- 
+                <button class="btn-review" (click)="reviewCase(case)">
+                  <svg width="20" height="20" viewBox="0 0 30 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M3.89882 5.9087L7.06104 25.0092C7.20569 25.8836 7.65606 26.6783 8.33192 27.2517C9.00778 27.825 9.86524 28.1398 10.7515 28.14H15.762M25.7859 5.9087L22.6252 25.0092C22.4806 25.8836 22.0302 26.6783 21.3543 27.2517C20.6785 27.825 19.821 28.1398 18.9347 28.14H13.9242M11.8829 13.2463V20.8024M17.8033 13.2463V20.8024M1 5.9087H28.6862M18.9991 5.9087V3.24483C18.9991 2.64946 18.7625 2.07848 18.3416 1.6575C17.9206 1.23651 17.3496 1 16.7542 1H12.932C12.3367 1 11.7657 1.23651 11.3447 1.6575C10.9237 2.07848 10.6872 2.64946 10.6872 3.24483V5.9087H18.9991Z"
+                      stroke="#9C9C9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button> -->
+
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="main-content tab-pane" *ngIf="activeTab === 'classification'">
+    <div class="data-view-full">
+      <!-- document-viewer.component.html -->
+      <!-- classification.component.html -->
+      <div class="classification-container">
+        <div class="header-section">
+          <h1>Classification</h1>
+          <h2></h2>
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." class="search-input" />
+            <button class="search-button">
+              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="claims-list">
+          <div class="claim-accordion" *ngFor="let claim of cliamIds; let i = index">
+            <!-- Hidden checkbox to control toggle -->
+            <input type="checkbox" class="accordion-toggle" [id]="'toggle-' + i">
+
+            <!-- Label acts as clickable header -->
+            <label class="claim-header" [for]="'toggle-' + i">
+              <div class="claim-info">
+                <div class="claim-field">
+                  <span class="field-label">CASE ID:</span>
+                  <span class="field-value">{{ claim }} {{claim?.status}}</span>
+                </div>
+                <div class="claim-field">
+                  <span class="field-label">PAGE COUNT:</span>
+                  <span class="field-value">{{ based_on_cliamId_list[claim]?.length }}</span>
+                </div>
+                <div class="claim-field">
+                  <span class="field-label">REVIEW:</span>
+
+                  <span class="field-value">
+                    <button class="review-button">{{checkHitlStatus(based_on_cliamId_list[claim])}}</button>
+                    <span *ngIf="!based_on_cliamId_list[claim][0]['status']" class="loader">Uploading......</span>
+                  </span>
+                  <span class="field-value" *ngIf="checkHitlStatus(based_on_cliamId_list[claim])">
+                    <button *ngIf="checkHitlStatus(based_on_cliamId_list[claim]) == 'Completed'" class="review-button"
+                      (click)="showextraction(claim)">→</button>
+                  </span>
+                </div>
+              </div>
+              <div class="accordion-icon">
+                <svg class="chevron" viewBox="0 0 24 24" width="24" height="24">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+
+
+
+            </label>
+
+
+
+            <!-- Accordion content -->
+            <div class="claim-content">
+              <div class="image-table">
+                <div class="table-header">
+                  <div class="image-column">Image</div>
+                  <div class="doctype-column">Doc.Type</div>
+                  <div class="doctype-column">HITL</div>
+                  <div class="action-column">Action</div>
+                </div>
+                <div class="table-body">
+                  <div class="table-row" *ngFor="let image of based_on_cliamId_list[claim]">
+                    <div class="image-column">{{ image.image }}</div>
+                    <div class="doctype-column">{{ image.top_label }}</div>
+                    <div class="doctype-column">{{ image.is_hitl?"Checked":'Not Checked' }}</div>
+                    <div class="action-column">
+                      <button class="review-button" (click)="toggleInvoiceInfo(image)">→</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="document-viewer" *ngIf="isdocumentVisible">
+        <div class="viewer-header">
+          <button class="close-button" (click)="toggleInvoiceInfo_close()">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <form [formGroup]="classification_obj">
+          <div class="viewer-content">
+            <div class="form-group">
+              <label for="claimId">Case ID</label>
+              <input type="text" id="claimId" [value]="imageDocView.claim_id" formControlName="claim_id" readonly />
+            </div>
+
+            <div class="form-group">
+              <label for="imageId">Image </label>
+              <input type="text" id="imageId" [value]="imageDocView.image" formControlName="img" readonly />
+            </div>
+
+            <div class="form-group">
+              <label for="docType">Doc.Type</label>
+              <div class="select-wrapper">
+                <select id="docType" formControlName="top_label" [(ngModel)]="selectedValue">
+                  <option *ngFor="let row of docList" [value]="row">{{ row }}</option>
+                  <!-- <option>MRN</option>
+                <option>Purchase Order</option>
+                <option>RAO</option> -->
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" width="18" height="18">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <div class="document-image-container">
+
+
+
+              <div style="position: relative; margin-bottom: var(--spacing-lg)">
+                <img [src]="image_url" alt="Document Image" class="document-image high-quality" />
+
+                <!-- <img [src]="image_orginal_image" alt="Document Header" class="document-image" hidden /> -->
+                <!-- <canvas #canvas style="width: 400px; height: 541px;"></canvas>
+                <div class="preview-controls" style="position: absolute; top: 10px; right: 10px;">
+                  <button class="icon-button" (click)="zoomIn()"
+                    style="background-color: white; box-shadow: var(--shadow-sm)">
+                    <svg class="svg-icon">
+                      <use xlink:href="#icon-zoom-in"></use>
+                    </svg>
+                  </button>
+
+                  <button class="icon-button" (click)="zoomOut()"
+                    style="background-color: white; box-shadow: var(--shadow-sm)">
+                    <svg class="svg-icon">
+                      <use xlink:href="#icon-zoom-in"></use>
+                    </svg>
+                  </button>
+                  <button class="icon-button" (click)="toggleFullScreen()"
+                    style="background-color: white; box-shadow: var(--shadow-sm)">
+                    <svg class="svg-icon">
+                      <use xlink:href="#icon-expand"></use>
+                    </svg>
+                  </button>
+                </div> -->
+              </div>
+
+              <button class="fullscreen-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path
+                    d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                  </path>
+                </svg>
+              </button>
+            </div>
+
+
+            <div class="document-controls">
+              <button class="save-btn" (click)="classification_Update()">Save</button>
+
+              <div class="pagination-controls">
+                <button class="prev-btn" disabled>
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+
+                <div class="page-number">1</div>
+
+                <button class="next-btn">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content tab-pane" *ngIf="activeTab === 'extraction'">
+    <!-- SVG Sprite for Icons -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+      <!-- Navigation icons -->
+      <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path>
+      </symbol>
+      <symbol id="icon-arrow-down" viewBox="0 0 24 24">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path>
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path
+          d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+        </path>
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path
+          d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z">
+        </path>
+      </symbol>
+      <symbol id="icon-dropdown" viewBox="0 0 24 24">
+        <path d="M7 10l5 5 5-5z"></path>
+      </symbol>
+      <symbol id="icon-more" viewBox="0 0 24 24">
+        <path
+          d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+        </path>
+      </symbol>
+      <symbol id="icon-more-down" viewBox="0 0 24 24">
+        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+        </path>
+      </symbol>
+
+      <!-- Action icons -->
+      <symbol id="icon-save" viewBox="0 0 24 24">
+        <path
+          d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z">
+        </path>
+      </symbol>
+      <symbol id="icon-upload" viewBox="0 0 24 24">
+        <path d="M5 20h14v-2H5v2zm0-10h4v6h6v-6h4l-7-7-7 7z"></path>
+      </symbol>
+
+      <symbol id="icon-attach" viewBox="0 0 24 24">
+        <path
+          d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z">
+        </path>
+      </symbol>
+
+      <!-- Document icons -->
+      <symbol id="icon-document" viewBox="0 0 24 24">
+        <path
+          d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z">
+        </path>
+      </symbol>
+      <symbol id="icon-image" viewBox="0 0 24 24">
+        <path
+          d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z">
+        </path>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path
+          d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+        </path>
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+      </symbol>
+      <symbol id="icon-print" viewBox="0 0 24 24">
+        <path
+          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z">
+        </path>
+      </symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24">
+        <path
+          d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z">
+        </path>
+      </symbol>
+
+      <!-- UI icons -->
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+        <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"></path>
+      </symbol>
+      <symbol id="icon-expand" viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path>
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+        </path>
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+      </symbol>
+      <symbol id="icon-zoom-in" viewBox="0 0 24 24">
+        <path
+          d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1v2h2v1z">
+        </path>
+      </symbol>
+      <symbol id="icon-visibility" viewBox="0 0 24 24">
+        <path
+          d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z">
+        </path>
+      </symbol>
+      <symbol id="icon-delete" viewBox="0 0 24 24">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+      </symbol>
+      <symbol id="icon-check-circle" viewBox="0 0 24 24">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+        </path>
+      </symbol>
+      <symbol id="icon-external" viewBox="0 0 24 24">
+        <path
+          d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+        </path>
+      </symbol>
+      <symbol id="icon-folder" viewBox="0 0 24 24">
+        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"></path>
+      </symbol>
+      <symbol id="icon-payment" viewBox="0 0 24 24">
+        <path
+          d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z">
+        </path>
+      </symbol>
+      <symbol id="icon-list" viewBox="0 0 24 24">
+        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
+      </symbol>
+    </svg>
+
+    <div class="app-container">
+
+
+      <nav class="sidenav-doc">
+        <ng-container *ngIf="list_top_class?.length > 0">
+          <div *ngFor="let doc of list_top_class; let i = index" class="doc-item"
+            [class.active]="doc.id === activeDocId" (click)="onDocumentClick(doc)">
+            <div class="doc-icon">{{ i + 1 }}</div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="list_top_class?.length <= 0">
+
+          <div>No Docs</div>
+
+        </ng-container>
+
+      </nav>
+      <div class="main-panel">
+        <div class="document-id-container">
+          <div class="document-id">
+            <div>{{review_data[0]['claim_id']}}</div>
+            <!-- <div class="id-actions">
+              <button class="icon-button">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-arrow-down"></use>
+                </svg>
+              </button>
+              <button class="icon-button">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-arrow-down"></use>
+                </svg>
+              </button>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="tabs">
+
+
+          <button class="tab" *ngFor="let tab of tabs_dynamically" [ngClass]="{ active: activeTabs === tab.value }"
+            (click)="onTabClick(tab.value)">
+            <svg class="svg-icon tab-icon">
+              <use [attr.xlink:href]="'#' + tab.icon"></use>
+            </svg>
+            {{ tab.label }}
+          </button>
+
+        </div>
+        <div *ngIf="activeTabs === 'Purchase Order'">
+          <app-purchase-order (isLoader)="onLoaderChange($event)" [poDetails]="purchaseOrderDetails"
+            (updated_data)="saveinvoicedetailsOutput($event)"></app-purchase-order>
+        </div>
+
+
+        <div *ngIf="activeTabs === 'Tax Invoice'">
+          <div class="form-content">
+            <div class="form-container">
+
+              <!-- ================= Invoice Details ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Invoice Details
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <!-- Invoice No -->
+                  <div class="form-group">
+                    <label class="required">Invoice No</label>
+                    <div *ngIf="isEditMode">
+                      <input type="text" class="form-control" [(ngModel)]="invoiceDetails.invoice_number"
+                        name="invoice_number" (input)="searchInImage($event)" (click)="onInputClick($event)" />
+                      <div *ngIf="getValidation('invoice_number')" class="mt-1">
+                        <small [ngClass]="{
+                'text-success': getValidation('invoice_number')?.isValid,
+                'text-danger': !getValidation('invoice_number')?.isValid
+              }">
+                          {{ getValidation('invoice_number')?.remarks.join(', ') }}
+                        </small>
+                      </div>
+                    </div>
+                    <p *ngIf="!isEditMode" class="value-form"> {{invoiceDetails?.invoice_number}}</p>
+
+                  </div>
+
+                  <!-- Invoice Date -->
+                  <div class="form-group">
+                    <label>Invoice date</label>
+                    <div *ngIf="isEditMode">
+                      <input type="text" class="form-control" [(ngModel)]="invoiceDetails.invoice_date"
+                        name="invoice_date" />
+                      <div *ngIf="getValidation('invoice_date')" class="mt-1">
+                        <small [ngClass]="{
+                'text-success': getValidation('invoice_date')?.isValid,
+                'text-danger': !getValidation('invoice_date')?.isValid
+              }">
+                          {{ getValidation('invoice_date')?.remarks.join(', ') }}
+                        </small>
+                      </div>
+                    </div>
+
+                    <p *ngIf="!isEditMode" class="value-form"> {{invoiceDetails?.invoice_date}}</p>
+
+                  </div>
+
+                  <!-- Delivery Note No -->
+                  <div class="form-group">
+                    <label>Delivery Note No</label>
+                    <input type="text" *ngIf="isEditMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.delivery_note_no" name="delivery_note_no" />
+
+                    <p *ngIf="!isEditMode" class="value-form">
+                      {{invoiceDetails?.delivery_note_no?invoiceDetails?.delivery_note_no:'No Data Found'}}</p>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <!-- Delivery Note Date -->
+                  <div class="form-group">
+                    <label class="required">Delivery Note date</label>
+                    <input type="text" *ngIf="isEditMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.delivery_note_date" name="delivery_note_date" />
+                    <p *ngIf="!isEditMode" class="value-form">
+                      {{invoiceDetails?.delivery_note_date?invoiceDetails?.delivery_note_date:'No Data Found'}}</p>
+                  </div>
+
+                  <!-- Buyer's Order No -->
+                  <div class="form-group">
+                    <label class="required">Buyer's Order No</label>
+                    <input type="text" *ngIf="isEditMode" class="form-control" [(ngModel)]="invoiceDetails.po_ref"
+                      name="buyers_order_no" />
+
+                    <p *ngIf="!isEditMode" class="value-form">
+                      {{invoiceDetails?.po_ref?invoiceDetails?.po_ref:'Not Data Found'}}</p>
+                  </div>
+
+                  <!-- Buyer's Order Date -->
+                  <div class="form-group">
+                    <label>Buyer's Order Date</label>
+                    <input type="text" *ngIf="isEditMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.buyers_order_date" name="buyers_order_date" />
+                    <p *ngIf="!isEditMode" class="value-form">
+                      {{invoiceDetails?.buyers_order_no?invoiceDetails?.buyers_order_date:'Not Data Found'}}</p>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div *ngIf="isEditMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditMode()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditMode" (click)="enableEdit()">
+                    Edit
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- ================= Bill To ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Bill To
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Company Name</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control" name='bill_to_company_name'
+                      [(ngModel)]="invoiceDetails.bill_to_company_name" name="bill_to_company_name" />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_company_name}}</p>
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.bill_to_address" name="bill_to_address" readonly />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_address}}</p>
+                  </div>
+                  <div class="form-group">
+                    <label>State</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.bill_to_state" name="bill_to_state" readonly />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_state}}</p>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>State Code</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.bill_to_state_code" name="bill_to_state_code" />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_state_code}}</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="required">GSTIN</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.bill_to_gstin" name="bill_to_gstin" />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_gstin}}</p>
+                    <div *ngIf="getValidation('bill_to_gstin')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('bill_to_gstin')?.isValid,
+                'text-danger': !getValidation('bill_to_gstin')?.isValid
+              }">
+                        {{ getValidation('bill_to_gstin')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="required">PAN</label>
+                    <input type="text" *ngIf="isEditBillMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.bill_to_pan" name="bill_to_pan" />
+                    <p *ngIf="!isEditBillMode" class="value-form"> {{invoiceDetails?.bill_to_pan}}</p>
+
+                    <ng-container>
+
+                      <div *ngIf="getValidation('bill_to_pan')" class="mt-1">
+                        <small [ngClass]="{
+                'text-success': getValidation('bill_to_pan')?.isValid,
+                'text-danger': !getValidation('bill_to_pan')?.isValid
+              }">
+                          {{ getValidation('bill_to_pan')?.remarks.join(', ') }}
+                        </small>
+                      </div>
+
+                    </ng-container>
+
+
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div *ngIf="isEditBillMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditModeBill()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditBillMode" (click)="enableEditBill()">
+                    Edit
+
+                  </button>
+                </div>
+
+
+              </div>
+
+              <!-- ================= Supplier ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Supplier
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Company Name</label>
+                    <input type="text" *ngIf="isEditSupplierMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.supplier_name" name="supplier_name" />
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.supplier_name}}</p>
+                    <!-- Verification message -->
+                    <div *ngIf="true" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.name != invoiceDetails?.supplier_name,
+        'text-success': gstinVerfiedObject?.name === invoiceDetails?.supplier_name,
+        'text-danger': gstinVerfiedObject?.name != invoiceDetails?.supplier_name,
+      }">
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        gstinVerfiedObject?.name?.trim()?.toLowerCase() ==
+                        invoiceDetails?.supplier_name?.trim()?.toLowerCase()
+                        ? 'Company Name verified successfully ✅'
+                        : "Invalid Company Name ❌"
+                        }}
+                      </small>
+                    </div>
+
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" *ngIf="isEditSupplierMode" class="form-control"
+                      [(ngModel)]="invoiceDetails.supplier_address" />
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.supplier_address}}</p>
+                  </div>
+                  <div class="form-group">
+                    <label>State</label>
+                    <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                      [(ngModel)]="invoiceDetails.supplier_state" />
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.supplier_state}}</p>
+
+
+                    <div *ngIf="true" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.state != invoiceDetails?.supplier_state,
+        'text-success': gstinVerfiedObject?.state === invoiceDetails?.supplier_state,
+        'text-danger': gstinVerfiedObject?.state != invoiceDetails?.supplier_state,
+      }">
+
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        getStateInfo(invoiceDetails?.gstin_supplier).state === invoiceDetails?.supplier_state
+                        ? 'State Name Verfied'
+                        : "Invalid State ❌"
+                        }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>State Code</label>
+                    <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                      [(ngModel)]="invoiceDetails.supplier_state_code" />
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.supplier_state_code}}</p>
+
+                    <small [ngClass]="{
+        'text-secondary': !getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+        'text-success': getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+        'text-danger': !getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+      }">
+
+
+                      {{
+                      gstinVerfiedObject == null ? 'Not verified':
+
+                      getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier)
+                      ? 'State Code Verfied'
+                      : "Invalid State Code"
+                      }}
+                    </small>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">GSTIN</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                        [(ngModel)]="invoiceDetails.gstin_supplier" />
+                      <p *ngIf="!isEditSupplierMode">{{invoiceDetails.gstin_supplier}}</p>
+                      <button *ngIf="gstinVerfiedObject == null" class="btn btn-primary btn-verify" type="button"
+                        (click)="verifyGSTIN(invoiceDetails?.gstin_supplier)">
+                        Verify
+                      </button>
+                      <div *ngIf="gstinVerfiedObject">
+                        <!-- Dropdown -->
+                        <select *ngIf="!showDatePicker" class="verify-select-box form-control"
+                          (change)="onSelectOption($event)">
+                          <option value="">Select Option</option>
+                          <option value="date">Date Picker</option>
+                          <option value="next">Next Invoice</option>
+                        </select>
+
+                        <!-- Date Picker -->
+                        <input *ngIf="showDatePicker" type="date" class="form-control mt-2"
+                          [(ngModel)]="selectedDate" />
+                      </div>
+
+                    </div>
+                    <div *ngIf="verificationStatus" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': verificationStatus === 'id_not_found',
+        'text-success': verificationStatus === 'id_found',
+        'text-danger': verificationStatus === 'id_not_found'
+      }">
+
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        verificationStatus === 'id_found'
+                        ? 'GSTIN verified successfully ✅'
+                        : "Invalid GSTIN ❌ "
+                        }}
+                      </small>
+                    </div>
+
+                    <div *ngIf="getValidation('gstin_supplier')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('gstin_supplier')?.isValid,
+                'text-danger': !getValidation('gstin_supplier')?.isValid
+              }">
+                        {{ getValidation('gstin_supplier')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="required">PAN</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                        [(ngModel)]="invoiceDetails.pan_supplier" />
+                      <p *ngIf="!isEditSupplierMode">{{invoiceDetails.pan_supplier}}</p>
+
+
+                      <button class="btn btn-primary btn-verify" type="button"
+                        (click)="verifyPAN(invoiceDetails?.pan_supplier)">
+                        Verify
+                      </button>
+
+
+                    </div>
+
+                    <!-- Verification message -->
+                    <div *ngIf="verificationStatus" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': panVerifiedObject?.status === 'id_not_found',
+        'text-success': panVerifiedObject?.status === 'id_found',
+        'text-danger': panVerifiedObject?.status === 'id_not_found'
+      }">
+                        {{
+                        panVerifiedObject == null ? 'Not verified':
+
+                        panVerifiedObject?.status === 'id_found'
+                        ? 'Pan verified successfully ✅'
+                        : "Invalid PAN ❌"
+                        }}
+                      </small>
+                    </div>
+                    <div *ngIf="getValidation('pan_supplier')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('pan_supplier')?.isValid,
+                'text-danger': !getValidation('pan_supplier')?.isValid
+              }">
+                        {{ getValidation('pan_supplier')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>CIN</label>
+                    <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                      [(ngModel)]="invoiceDetails.cin" />
+
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.cin}}</p>
+
+
+
+                  </div>
+                  <div class="form-group">
+                    <label>UDYAM Registration No.</label>
+                    <!-- <input type="text" class="form-control" /> -->
+
+                    <div class="input-group">
+                      <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                        [(ngModel)]="invoiceDetails.udyam_regno" />
+                      <p *ngIf="!isEditSupplierMode">{{invoiceDetails?.udyam_regno ?
+                        invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno}}</p>
+
+
+                      <ng-container
+                        *ngIf="invoiceDetails?.udyam_regno ? invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno">
+                        <button class="btn btn-primary btn-verify" type="button"
+                          (click)="verifyMems(invoiceDetails?.udyam_regno ? invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno)">
+                          Verify
+                        </button>
+
+                      </ng-container>
+
+
+
+                    </div>
+                    <!-- Verification message -->
+                    <div *ngIf="memsVerifiedObject" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': verificationStatusMems != 'success',
+        'text-success': verificationStatusMems === 'success',
+        'text-danger': verificationStatusMems != 'success'
+      }">
+                        {{
+                        memsVerifiedObject == null ? 'Not verified':
+
+                        verificationStatusMems == 'success'
+                        ? 'MEMS verified successfully ✅'
+                        : "Invalid MEMS ❌"
+                        }}
+                      </small>
+                    </div>
+
+
+
+
+
+
+                  </div>
+                  <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                      [(ngModel)]="invoiceDetails.contact_number" />
+
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.contact_number}}</p>
+                  </div>
+                </div>
+
+
+
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" *ngIf="isEditSupplierMode"
+                      [(ngModel)]="invoiceDetails.email" />
+
+                    <p *ngIf="!isEditSupplierMode">{{invoiceDetails.email}}</p>
+                  </div>
+
+
+                </div>
+                <a href="#" class="show-more">
+                  Show More
+                  <svg class="svg-icon svg-icon--sm">
+                    <use xlink:href="#icon-more-down"></use>
+                  </svg>
+                </a>
+                <div class="form-row">
+                  <div *ngIf="isEditSupplierMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditModeBillSupplier()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditSupplierMode" (click)="enableEditSupplier()">
+                    Edit
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- ================= Bank Details ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Bank Details
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Account Name</label>
+
+                    <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
+                      [(ngModel)]="invoiceDetails.bank_details.account_name" />
+
+                    <p *ngIf="!isEditBankDetailMode">{{invoiceDetails?.bank_details?.account_name}}</p>
+
+
+                    <div class="status-container">
+
+
+                      <p *ngIf="verified_back_details">
+                        <span [ngClass]="
+      verified_back_details.name === invoiceDetails?.bank_details?.account_name
+        ? 'verified-text'
+        : 'invalid-text'
+    ">
+                          {{
+                          verified_back_details.name === invoiceDetails?.bank_details?.account_name
+                          ? 'Verified Bank Account Name ✅'
+                          : 'Invalid Bank Account Name'
+                          }}
+                        </span>
+                      </p>
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>IFSC Code</label>
+
+
+                    <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
+                      [(ngModel)]="invoiceDetails.bank_details.ifsc_code" />
+
+                    <p *ngIf="!isEditBankDetailMode">{{invoiceDetails?.bank_details?.ifsc_code}}</p>
+                    <div class="status-container">
+                      <p *ngIf="verified_back_details">
+
+
+                        <span [ngClass]="
+      verified_back_details.ifsc_code === invoiceDetails?.bank_details?.ifsc_code
+        ? 'verified-text'
+        : 'invalid-text'
+    ">
+                          {{
+                          verified_back_details.ifsc_code === invoiceDetails?.bank_details?.ifsc_code
+                          ? 'Verified Bank IFCS ✅'
+                          : 'Invalid Bank IFCS Code'
+                          }}
+                        </span>
+
+                      </p>
+
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+
+                    </div>
+
+                  </div>
+                  <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" class="form-control" *ngIf="isEditBankDetailMode"
+                      [(ngModel)]="invoiceDetails.bank_details.account_no" />
+
+
+                    <p *ngIf="!isEditBankDetailMode">{{invoiceDetails?.bank_details?.account_no}}</p>
+
+
+
+
+                    <div class="status-container">
+
+
+                      <p *ngIf="verified_back_details">
+
+
+                        <span [ngClass]="
+      verified_back_details.status== 'id_found'
+        ? 'verified-text'
+        : 'invalid-text'
+    ">
+                          {{
+                          verified_back_details.status== 'id_found'
+                          ? 'Verified Bank IFCS ✅'
+                          : 'Invalid Bank IFCS Code'
+                          }}
+                        </span>
+
+                      </p>
+
+
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+
+                    </div>
+
+                  </div>
+                  <div class="bank-verify-btn">
+
+                    <button class="btn btn-primary btn-verify" type="button"
+                      (click)="verifyBankDetails(invoiceDetails?.bank_details?.account_no,invoiceDetails?.bank_details?.ifsc_code)">
+                      Verify
+                    </button>
+
+                  </div>
+
+                </div>
+
+                <div class="form-row">
+                  <div *ngIf="isEditBankDetailMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditModeBillBankDetail()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditBankDetailMode" (click)="enableEditBankDetail()">
+                    Edit
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- ================= Line Items ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Invoice Items
+                    <div class="badge">{{ invoiceDetails?.line_items?.length }}</div>
+                  </div>
+                </div>
+
+
+                <div class="table-container">
+                  <button class="btn btn-primary mb-2" (click)="addRow()">+ Add Row</button>
+
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>HSN</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of invoiceDetails.line_items; let i = index">
+                        <td *ngIf="!row.isEditing">{{ row.item_name }}</td>
+                        <td *ngIf="row.isEditing"><input [(ngModel)]="row.item_name" class="form-control" /></td>
+
+                        <td *ngIf="!row.isEditing">{{ row.hsn }}</td>
+                        <td *ngIf="row.isEditing"><input [(ngModel)]="row.hsn" class="form-control" /></td>
+
+                        <td *ngIf="!row.isEditing">{{ row.item_qty }}</td>
+                        <td *ngIf="row.isEditing"><input type="number" [(ngModel)]="row.item_qty"
+                            class="form-control" /></td>
+
+                        <td *ngIf="!row.isEditing">{{ row.unit_price }}</td>
+                        <td *ngIf="row.isEditing"><input type="number" [(ngModel)]="row.unit_price"
+                            class="form-control" /></td>
+
+
+                        <td *ngIf="row.isEditing"><input type="number" [(ngModel)]="row.total_taxable_amount"
+                            class="form-control" /></td>
+
+                        <td class="action-btn">
+                          <button *ngIf="!row.isEditing" class="btn btn-sm btn-secondary"
+                            (click)="editRow(i)">Edit</button>
+                          <button *ngIf="row.isEditing" class="btn btn-sm btn-success"
+                            (click)="saveRow(i)">Save</button>
+                          <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+
+
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Summary
+                    <div class="badge">{{summaryLineItem?.length}}</div>
+                  </div>
+                </div>
+                <div class="data-table-container" [style]="{ overflow: 'auto' }">
+                  <div *ngFor="let row of summaryLineItem; let i = index">
+                    <table class="data-table" border="1" style="margin-bottom: 20px;">
+                      <tr>
+                        <th>total_discount_value</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editDiscount">
+                            {{ row.total_discount_value }}
+                          </ng-container>
+                          <ng-template #editDiscount>
+                            <input type="number" [(ngModel)]="row.total_discount_value" class="edit-input" />
+                          </ng-template>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>total_quantity</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editQty">
+                            {{ row.total_quantity }}
+                          </ng-container>
+                          <ng-template #editQty>
+                            <input type="number" [(ngModel)]="row.total_quantity" class="edit-input" />
+                          </ng-template>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>total_taxable_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTaxable">
+                            {{ row.total_taxable_amount }}
+                          </ng-container>
+                          <ng-template #editTaxable>
+                            <input type="number" [(ngModel)]="row.total_taxable_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>tcs_rate</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.tcs_rate }}
+                          </ng-container>
+                          <ng-template #editTcs>
+                            <input type="number" [(ngModel)]="row.tcs_rate" class="edit-input" />
+                          </ng-template>
+                        </td>
+                      </tr>
+
+
+
+
+
+                      <tr>
+                        <th>taxable_value</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.taxable_values }}
+                          </ng-container>
+                          <ng-template #edittax>
+                            <input type="number" [(ngModel)]="row.taxable_values" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+
+                      </tr>
+                      <tr>
+                        <th>total_cgst_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.total_cgst_amount }}
+                          </ng-container>
+                          <ng-template #editcgst>
+                            <input type="number" [(ngModel)]="row.total_cgst_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+                      </tr>
+                      <tr>
+                        <th>total_sgst_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.total_sgst_amount }}
+                          </ng-container>
+                          <ng-template #editsgst>
+                            <input type="number" [(ngModel)]="row.total_sgst_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+
+                      </tr>
+                      <tr>
+                        <th>tcs_rate</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.tcs_rate }}
+                          </ng-container>
+                          <ng-template #edittcs_rate>
+                            <input type="number" [(ngModel)]="row.tcs_rate" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+                      </tr>
+                      <tr>
+                        <th>taxable_value</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.taxable_value }}
+                          </ng-container>
+                          <ng-template #edittaxable_value>
+                            <input type="number" [(ngModel)]="row.taxable_value" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+
+                      </tr>
+                      <tr>
+                        <th>total_cgst_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.total_cgst_amount }}
+                          </ng-container>
+                          <ng-template #edittotal_cgst_amount>
+                            <input type="number" [(ngModel)]="row.total_cgst_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+                      </tr>
+                      <tr>
+                        <th>total_sgst_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode">
+                            {{ row.total_sgst_amount }}
+                          </ng-container>
+                          <ng-template #edittotal_sgst_amount>
+                            <input type="number" [(ngModel)]="row.total_sgst_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+
+
+                      </tr>
+                      <tr>
+                        <th>total_tax_amount</th>
+                        <td>
+                          <ng-container *ngIf="!isEditMode; else editTcs">
+                            {{ row.total_tax_amount }}
+                          </ng-container>
+                          <ng-template #edittotal_sgst_amount>
+                            <input type="number" [(ngModel)]="row.total_tax_amount" class="edit-input" />
+                          </ng-template>
+                        </td>
+
+                      </tr>
+
+
+
+
+
+
+
+
+
+                    </table>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div *ngIf="isEditMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditMode()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditMode" (click)="enableEdit()">
+                    Edit
+
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-section" *ngIf="false">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Other
+                    <div class="badge">{{ assetDetails?.length | number}}</div>
+                  </div>
+                </div>
+                <div class="data-table-container" [style]="{ overflow: 'auto' }">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th class="checkbox-cell">
+                          <input type="checkbox" class="custom-checkbox" />
+                        </th>
+                        <!-- <th>Invoice Number</th> -->
+                        <th>Material Code</th>
+                        <th>Chassis Number</th>
+                        <th>Engine Number</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of assetDetails">
+                        <td class="checkbox-cell">
+                          <input type="checkbox" class="custom-checkbox" />
+                        </td>
+                        <!-- <td>{{row.invoice_number}}</td> -->
+                        <td>{{ row.material_code }}</td>
+                        <td>{{ row.chassis_number }}</td>
+                        <td>{{ row.engine_number }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="form-row">
+                  <div *ngIf="isEditMode" class="edit-container">
+                    <button class="btn btn-primary" (click)="saveinvoicedetails(invoiceDetails)">
+                      Update
+
+                    </button>
+                    <button class="btn btn-primary" (click)="disableEditMode()">
+                      Cancle
+
+                    </button>
+
+                  </div>
+
+                  <button class="btn btn-primary" *ngIf="!isEditMode" (click)="enableEdit()">
+                    Edit
+
+                  </button>
+                </div>
+              </div>
+
+              <!-- ================= Buttons ================= -->
+              <div class="button-group">
+                <button class="btn">Cancel</button>
+                <button class="btn">Reset</button>
+                <button class="btn btn-primary">Save</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+        <div *ngIf="activeTabs === 'e-invoice'">
+          <div class="form-content">
+            <div class="form-container">
+
+              <!-- ================= Invoice Details ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Invoice Details
+                  </div>
+                </div>
+
+                <div class="form-row">
+
+                  <div class="form-group">
+                    <label class="required">IRN No</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.irn"
+                      (input)="searchInImage($event)" (click)="onInputClick($event)" />
+                    <div *ngIf="getValidation('irn')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('irn')?.isValid,
+                'text-danger': !getValidation('irn')?.isValid
+              }">
+                        {{ getValidation('irn')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                  <!-- Invoice No -->
+                  <div class="form-group">
+                    <label class="required">Invoice No</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.invoice_number"
+                      (input)="searchInImage($event)" (click)="onInputClick($event)" />
+                    <div *ngIf="getValidation('invoice_number')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('invoice_number')?.isValid,
+                'text-danger': !getValidation('invoice_number')?.isValid
+              }">
+                        {{ getValidation('invoice_number')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+
+                  <!-- Invoice Date -->
+                  <div class="form-group">
+                    <label>Invoice date</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.invoice_date" />
+                    <div *ngIf="getValidation('invoice_date')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('invoice_date')?.isValid,
+                'text-danger': !getValidation('invoice_date')?.isValid
+              }">
+                        {{ getValidation('invoice_date')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+
+                  <!-- Delivery Note No -->
+                  <div class="form-group">
+                    <label>Delivery Note No</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.delivery_note_no?invoiceDetails?.delivery_note_no:'No Data Found'" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <!-- Delivery Note Date -->
+                  <div class="form-group">
+                    <label class="required">Delivery Note date</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.delivery_note_date?invoiceDetails?.delivery_note_date:'No Data Found'" />
+                  </div>
+
+                  <!-- Buyer's Order No -->
+                  <div class="form-group">
+                    <label class="required">Buyer's Order No</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.buyers_order_no?invoiceDetails?.buyers_order_no:'Not Data Found'" />
+                  </div>
+
+                  <!-- Buyer's Order Date -->
+                  <div class="form-group">
+                    <label>Buyer's Order Date</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.buyers_order_date?invoiceDetails?.buyers_order_date:'No Data Found'" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- ================= Bill To ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Bill To
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Company Name</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.bill_to_company_name?invoiceDetails?.bill_to_company_name:'Not Data Found'" />
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.bill_to_address?invoiceDetails?.bill_to_address:'Not Data Found'"
+                      readonly />
+                  </div>
+                  <div class="form-group">
+                    <label>State</label>
+                    <input type="text" class="form-control"
+                      [value]="invoiceDetails?.bill_to_state?invoiceDetails?.bill_to_state:'No Data Found'" readonly />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>State Code</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bill_to_state_code" />
+                  </div>
+                  <div class="form-group">
+                    <label class="required">GSTIN</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bill_to_gstin" />
+                    <div *ngIf="getValidation('bill_to_gstin')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('bill_to_gstin')?.isValid,
+                'text-danger': !getValidation('bill_to_gstin')?.isValid
+              }">
+                        {{ getValidation('bill_to_gstin')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="required">PAN</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bill_to_pan" />
+                    <div *ngIf="getValidation('bill_to_pan')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('bill_to_pan')?.isValid,
+                'text-danger': !getValidation('bill_to_pan')?.isValid
+              }">
+                        {{ getValidation('bill_to_pan')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ================= Supplier ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Supplier
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Company Name</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.supplier_name" />
+                    <!-- Verification message -->
+                    <div *ngIf="true" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.name != invoiceDetails?.supplier_name,
+        'text-success': gstinVerfiedObject?.name === invoiceDetails?.supplier_name,
+        'text-danger': gstinVerfiedObject?.name != invoiceDetails?.supplier_name,
+      }">
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        gstinVerfiedObject?.name?.trim()?.toLowerCase() ==
+                        invoiceDetails?.supplier_name?.trim()?.toLowerCase()
+                        ? 'Company Name verified successfully ✅'
+                        : "Invalid Company Name"
+                        }}
+                      </small>
+                    </div>
+
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.supplier_address" />
+                  </div>
+                  <div class="form-group">
+                    <label>State</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.supplier_state" />
+
+                    <div *ngIf="true" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': gstinVerfiedObject?.state != invoiceDetails?.supplier_state,
+        'text-success': gstinVerfiedObject?.state === invoiceDetails?.supplier_state,
+        'text-danger': gstinVerfiedObject?.state != invoiceDetails?.supplier_state,
+      }">
+
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        getStateInfo(invoiceDetails?.gstin_supplier).state === invoiceDetails?.supplier_state
+                        ? 'State Name Verfied'
+                        : "Invalid State"
+                        }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>State Code</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.supplier_state_code" />
+                    <small [ngClass]="{
+        'text-secondary': !getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+        'text-success': getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+        'text-danger': !getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier),
+      }">
+
+
+                      {{
+                      gstinVerfiedObject == null ? 'Not verified':
+
+                      getStateCodeValidation(getStateInfo(invoiceDetails?.gstin_supplier).code,invoiceDetails?.gstin_supplier)
+                      ? 'State Code Verfied'
+                      : "Invalid State Code"
+                      }}
+                    </small>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">GSTIN</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" [value]="invoiceDetails?.gstin_supplier" />
+                      <button *ngIf="gstinVerfiedObject == null" class="btn btn-primary btn-verify" type="button"
+                        (click)="verifyGSTIN(invoiceDetails?.gstin_supplier)">
+                        Verify
+                      </button>
+                      <div *ngIf="gstinVerfiedObject">
+                        <!-- Dropdown -->
+                        <select *ngIf="!showDatePicker" class="verify-select-box form-control"
+                          (change)="onSelectOption($event)">
+                          <option value="">Select Option</option>
+                          <option value="date">Date Picker</option>
+                          <option value="next">Next Invoice</option>
+                        </select>
+
+                        <!-- Date Picker -->
+                        <input *ngIf="showDatePicker" type="date" class="form-control mt-2"
+                          [(ngModel)]="selectedDate" />
+                      </div>
+
+                    </div>
+                    <div *ngIf="verificationStatus" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': verificationStatus === 'id_not_found',
+        'text-success': verificationStatus === 'id_found',
+        'text-danger': verificationStatus === 'id_not_found'
+      }">
+
+
+                        {{
+                        gstinVerfiedObject == null ? 'Not verified':
+
+                        verificationStatus === 'id_found'
+                        ? 'GSTIN verified successfully ✅✅'
+                        : "Invalid GSTIN ❌"
+                        }}
+                      </small>
+                    </div>
+
+                    <div *ngIf="getValidation('gstin_supplier')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('gstin_supplier')?.isValid,
+                'text-danger': !getValidation('gstin_supplier')?.isValid
+              }">
+                        {{ getValidation('gstin_supplier')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="required">PAN</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" [value]="invoiceDetails?.pan_supplier" />
+                      <button class="btn btn-primary btn-verify" type="button"
+                        (click)="verifyPAN(invoiceDetails?.pan_supplier)">
+                        Verify
+                      </button>
+
+
+                    </div>
+
+                    <!-- Verification message -->
+                    <div *ngIf="verificationStatus" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': panVerifiedObject?.status === 'id_not_found',
+        'text-success': panVerifiedObject?.status === 'id_found',
+        'text-danger': panVerifiedObject?.status === 'id_not_found'
+      }">
+                        {{
+                        panVerifiedObject == null ? 'Not verified':
+
+                        panVerifiedObject?.status === 'id_found'
+                        ? 'Pan verified successfully ✅ ✅'
+                        : "Invalid PAN ❌"
+                        }}
+                      </small>
+                    </div>
+                    <div *ngIf="getValidation('pan_supplier')" class="mt-1">
+                      <small [ngClass]="{
+                'text-success': getValidation('pan_supplier')?.isValid,
+                'text-danger': !getValidation('pan_supplier')?.isValid
+              }">
+                        {{ getValidation('pan_supplier')?.remarks.join(', ') }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>CIN</label>
+                    <input type="text" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label>UDYAM Registration No.</label>
+                    <!-- <input type="text" class="form-control" /> -->
+
+                    <div class="input-group">
+                      <input type="text" class="form-control"
+                        [value]="invoiceDetails?.udyam_regno ? invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno" />
+
+                      <ng-container
+                        *ngIf="invoiceDetails?.udyam_regno ? invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno">
+                        <button class="btn btn-primary btn-verify" type="button"
+                          (click)="verifyMems(invoiceDetails?.udyam_regno ? invoiceDetails?.udyam_regno:invoiceDetails?.msme_regno)">
+                          Verify
+                        </button>
+
+                      </ng-container>
+
+
+
+                    </div>
+                    <!-- Verification message -->
+                    <div *ngIf="memsVerifiedObject" class="mt-1">
+                      <small [ngClass]="{
+        'text-secondary': verificationStatusMems != 'success',
+        'text-success': verificationStatusMems === 'success',
+        'text-danger': verificationStatusMems != 'success'
+      }">
+                        {{
+                        memsVerifiedObject == null ? 'Not verified':
+
+                        verificationStatusMems == 'success'
+                        ? 'MEMS verified successfully ✅✅'
+                        : "Invalid MEMS ❌"
+                        }}
+                      </small>
+                    </div>
+
+
+
+
+
+
+                  </div>
+                  <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label>Mobile</label>
+                    <input type="text" class="form-control" />
+                  </div>
+                  <!-- <div class="form-group">
+                    <div class="ghost-placeholder"></div>
+                  </div> -->
+                </div>
+                <a href="#" class="show-more">
+                  Show More
+                  <svg class="svg-icon svg-icon--sm">
+                    <use xlink:href="#icon-more-down"></use>
+                  </svg>
+                </a>
+              </div>
+
+              <!-- ================= Bank Details ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Bank Details
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="required">Account Name</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bank_details?.account_name" />
+                    <div class="status-container">
+                      <p class="text-secondary" *ngIf="verified_back_details"> {{verified_back_details.name==
+                        invoiceDetails?.bank_details?.account_name?'Verified Bank Account Name':'Invalid Bank Account
+                        name' }} </p>
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>IFSC Code</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bank_details?.ifsc_code" />
+                    <div class="status-container">
+                      <p class="text-secondary" *ngIf="verified_back_details">
+
+                        {{verified_back_details.ifsc_code== invoiceDetails?.bank_details?.ifsc_code?'Verified Bank IFCS
+                        Code':'Invalid Bank IFCS Code' }}
+
+                      </p>
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+
+                    </div>
+
+                  </div>
+                  <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" class="form-control" [value]="invoiceDetails?.bank_details?.account_no" />
+                    <div class="status-container">
+                      <p class="text-secondary" *ngIf="verified_back_details">
+
+                        {{verified_back_details.status== 'id_found'?'Verified Bank Account Number':'Invalid Bank Account
+                        Number' }}
+
+                      </p>
+                      <p class="text-secondary" *ngIf="verified_back_details == null"> Not verfied</p>
+
+                    </div>
+
+                  </div>
+                  <div class="bank-verify-btn">
+
+                    <button class="btn btn-primary btn-verify" type="button"
+                      (click)="verifyBankDetails(invoiceDetails?.bank_details?.account_no,invoiceDetails?.bank_details?.ifsc_code)">
+                      Verify
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- ================= Line Items ================= -->
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Invoice Items
+                    <div class="badge">{{ invoiceDetails?.line_items?.length }}</div>
+                  </div>
+                </div>
+
+                <div class="data-table-container" style="overflow:auto">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>HSN</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of invoiceDetails?.line_items; let i = index">
+                        <td>{{ row.item_name }}</td>
+                        <td>{{ row.hsn }}</td>
+                        <td>{{ row.item_qty }}</td>
+                        <td>{{ row.unit_price }}</td>
+                        <td>{{ row.total_retail_price }}</td>
+                      </tr>
+                      <!-- <tr *ngFor="let row of invoiceDetails?.line_items; let i = index">
+                <td colspan="5">
+                  <div *ngIf="getValidation('line_items', i, 'is_total_valid')" class="mt-1">
+                    <small [ngClass]="{
+                      'text-success': getValidation('line_items', i, 'is_total_valid')?.isValid,
+                      'text-danger': !getValidation('line_items', i, 'is_total_valid')?.isValid
+                    }">
+                      {{ getValidation('line_items', i, 'is_total_valid')?.remarks.join(', ') }}
+                    </small>
+                  </div>
+                </td>
+              </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Summary
+                    <div class="badge">{{summaryLineItem?.length}}</div>
+                  </div>
+                </div>
+                <div class="data-table-container" [style]="{ overflow: 'auto' }">
+                  <div *ngFor="let row of summaryLineItem ">
+                    <table class="data-table" border="1" style="margin-bottom: 20px;">
+                      <tr>
+                        <th>total_discount_value</th>
+                        <td>{{ row.total_discount_value }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_quantity</th>
+                        <td>{{ row.total_quantity }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_taxable_amount</th>
+                        <td>{{ row.total_tax_amount }}</td>
+                      </tr>
+                      <tr>
+                        <th>tcs_rate</th>
+                        <td>{{ row.tcs_rate }}</td>
+                      </tr>
+                      <tr>
+                        <th>taxable_value</th>
+                        <td>{{ row.taxable_values }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_cgst_amount</th>
+                        <td>{{ row.total_cgst_amount }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_sgst_amount</th>
+                        <td>{{ row.total_sgst_amount }}</td>
+                      </tr>
+                      <tr>
+                        <th>tcs_rate</th>
+                        <td>{{ row.tcs_rate }}</td>
+                      </tr>
+                      <tr>
+                        <th>taxable_value</th>
+                        <td>{{ row.taxable_value }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_cgst_amount</th>
+                        <td>{{ row.total_cgst_amount }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_sgst_amount</th>
+                        <td>{{ row.total_sgst_amount }}</td>
+                      </tr>
+                      <tr>
+                        <th>total_tax_amount</th>
+                        <td>{{ row.total_tax_amount }}</td>
+                      </tr>
+
+                    </table>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <svg class="svg-icon" style="color: var(--primary)">
+                      <use xlink:href="#icon-list"></use>
+                    </svg>
+                    Other
+                    <div class="badge">{{ assetDetails?.length | number}}</div>
+                  </div>
+                </div>
+                <div class="data-table-container" [style]="{ overflow: 'auto' }">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th class="checkbox-cell">
+                          <input type="checkbox" class="custom-checkbox" />
+                        </th>
+                        <!-- <th>Invoice Number</th> -->
+                        <th>Material Code</th>
+                        <th>Chassis Number</th>
+                        <th>Engine Number</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of assetDetails">
+                        <td class="checkbox-cell">
+                          <input type="checkbox" class="custom-checkbox" />
+                        </td>
+                        <!-- <td>{{row.invoice_number}}</td> -->
+                        <td>{{ row.material_code }}</td>
+                        <td>{{ row.chassis_number }}</td>
+                        <td>{{ row.engine_number }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- ================= Buttons ================= -->
+              <div class="button-group">
+                <button class="btn">Cancel</button>
+                <button class="btn">Reset</button>
+                <button class="btn btn-primary">Save</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="activeTabs === 'MRN'">
+          <app-material-receipt-note [item]="review_data"></app-material-receipt-note>
+        </div>
+        <div *ngIf="activeTabs === 'RAO'">
+          <app-receipt-against-order></app-receipt-against-order>
+        </div>
+        <div *ngIf="activeTabs === 'eway bill'">
+          <app-ewaybill [data]="ewaybillDetail"></app-ewaybill>
+        </div>
+        <!-- <app-purchase-order></app-purchase-order> -->
+      </div>
+
+      <div class="document-panel">
+
+
+        <div class="document-header">
+          <div class="main-nav">
+            <div class="nav-items">
+              <div *ngFor="let tab of extraction_tabs" class="nav-item" [class.active]="extractedActiveTab === tab.id"
+                (click)="setExtractedActiveTab(tab.id)">
+                {{ tab.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="document-content">
+
+          <div *ngIf="extractedActiveTab === 'Image'">
+            <div style="position: relative; margin-bottom: var(--spacing-lg)">
+              <img [src]="image_orginal_image" alt="Document Header" class="document-image" />
+
+            </div>
+          </div>
+
+          <div *ngIf="extractedActiveTab === 'Json'">
+            <div class="modal-content">
+              <h3>View / Edit JSON</h3>
+              <ngx-json-viewer [json]="fetchData" (change)="onJsonChange($event)"></ngx-json-viewer>
+
+            </div>
+          </div>
+
+          <div *ngIf="extractedActiveTab === 'MD File'">
+            <markdown [data]="mdContent"></markdown>
+          </div>
+
+          <div *ngIf="extractedActiveTab === 'Text File'">
+            <pre style="white-space: pre-wrap; word-break: break-word;">
+{{ txtContent }}
+  </pre>
+
+          </div>
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content tab-pane" *ngIf="activeTab === 'review'">
+
+    <app-review [item_1]="mrn_currentItem"></app-review>
+  </div>
+
+  <!-- Side Panel for Add Case -->
+  <div class="side-panel" [class.active]="isAddCaseOpen">
+    <div class="side-panel-header">
+      <h3>Upload Document</h3>
+      <button class="btn-close" (click)="closeAddCase()">
+        <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form enctype="multipart/form-data">
+      <div class="side-panel-content">
+
+        <!-- File Upload Area -->
+        <label for="fileUpload" class="file-upload-area">
+          <div class="file-upload-icon">
+            <svg class="upload-icon" viewBox="0 0 24 24" width="48" height="48">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <p>Drag & drop files here or Browse for file</p>
+          <p class="file-format-info">
+            PDF, PNG, JPG, and JPEG are all supported file formats
+          </p>
+          <input type="file" id="fileUpload" multiple style="display: none" accept=".pdf,.png,.jpg,.jpeg,.zip"
+            (change)="handleFileUpload($event)" />
+        </label>
+        <div class="upload-card" *ngIf="totalDocuments != 0">
+          <div class="file-info">
+            <div class="file-icon">
+              <svg class="file-icon-bg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M36.5 3.5H12.25C10.475 3.5 9.03125 4.97083 9.03125 6.75L9 48.5C9 50.2792 10.45 51.75 12.2292 51.75H43.75C45.5292 51.75 47 50.2792 47 48.5V14L36.5 3.5ZM43.75 48.5H12.25V6.75H34.875V15.625H43.75V48.5Z"
+                  fill="#E4E4E4" />
+              </svg>
+              <!-- <div class="file-type">PDF</div> -->
+            </div>
+            <div class="file-details">
+              <div class="file-name">{{filetarget.name}}</div>
+              <div class="file-status">
+                <span class="status">Uploading...</span>
+                <span class="dot">·</span>
+                <!-- <span class="file-size">2MB/4MB</span> -->
+              </div>
+            </div>
+            <!-- <button class="close-button">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                  </svg>
+              </button> -->
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        <!-- <div class="document-counter">Total Documents: {{ totalDocuments }}</div> -->
+
+        <div class="form-actions">
+          <button class="btn-submit" (click)="addCase()">
+
+            Upload
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+
+
+<div class="splash-screen" *ngIf="showSplash" [@splashAnimation]="splashState">
+  <div class="splash-logo">
+    <div class="splash-circle"></div>
+    <div class="splash-inner">
+      <i class="fas fa-fingerprint splash-icon"></i>
+    </div>
+  </div>
+  <div class="splash-text">ANALYSING</div>
+  <div class="splash-subtext">{{filetarget.name}}</div>
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="splashProgress"></div>
+  </div>
+</div>
+
+
+<!-- JSON Popup Modal -->
+<div class="modal" *ngIf="isJsonPopupOpen">
+  <div class="modal-content">
+    <h3>View / Edit JSON</h3>
+    <ngx-json-viewer [json]="fetchData" (change)="onJsonChange($event)"></ngx-json-viewer>
+
+    <!-- Action Buttons -->
+    <div class="modal-actions">
+      <button class="btn btn-primary" (click)="saveJson()">Save</button>
+      <button class="btn btn-secondary" (click)="closeJsonPopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Fullscreen Loader -->
+<div *ngIf="isVerifying">
+  <app-loader></app-loader>
+</div>

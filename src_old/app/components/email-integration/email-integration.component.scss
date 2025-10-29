@@ -1,0 +1,31 @@
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+.bpmn-viewer{
+  width: 80%;
+  height: 80%;
+flex-grow: 4;
+}
+
+
+.highlight{
+     background-color: red;
+    }
+
+    .djs-element.highlight polygon {
+      fill: #fff8e1 !important;
+      stroke: orange !important;
+      stroke-width: 4px !important;
+    }
+
+    .djs-element.highlight circle {
+      fill: #fff8e1 !important;
+      stroke: orange !important;
+    }
+
+

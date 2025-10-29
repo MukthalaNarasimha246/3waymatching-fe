@@ -3,9 +3,7 @@
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           RAO Details
         </div>
       </div>
@@ -13,11 +11,7 @@
         <div class="form-group">
           <label class="required">Rao Number</label>
           <input type="text" class="form-control" [value]="raoDetails['rao_number']" />
-          <div class="input-icon">
-            <svg class="svg-icon svg-icon--sm">
-              <use xlink:href="#icon-search"></use>
-            </svg>
-          </div>
+
         </div>
         <div class="form-group">
           <label>Rao Date</label>
@@ -35,20 +29,12 @@
           <div class="currency-group">
             <input type="text" class="form-control" [value]="raoDetails['po_date']">
           </div>
-          <div class="input-icon">
-            <svg class="svg-icon svg-icon--sm">
-              <use xlink:href="#icon-search"></use>
-            </svg>
-          </div>
+
         </div>
         <div class="form-group">
           <label class="required"> Ref. Bill (Supplier Invoice Number)</label>
           <input type="text" class="form-control" [value]="raoDetails['ref_invoice_number']">
-          <div class="input-icon">
-            <svg class="svg-icon svg-icon--sm">
-              <use xlink:href="#icon-search"></use>
-            </svg>
-          </div>
+
         </div>
         <div class="form-group">
           <label>Ref. Date (Supplier Invoice Date)</label>
@@ -76,7 +62,7 @@
 
       <a href="#" class="show-more">
         Show More
-        <svg class="svg-icon svg-icon--sm">
+        <svg class="">
           <use xlink:href="#icon-more-down"></use>
         </svg>
       </a>
@@ -85,9 +71,7 @@
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           RAO Line Items
           <!-- {{ raoLineItem.length }} -->
           <div class="badge">{{ raoLineItem.length }}</div>
@@ -155,9 +139,7 @@
     <div class="form-section">
       <div class="section-header">
         <div class="section-title">
-          <svg class="svg-icon" style="color: var(--primary)">
-            <use xlink:href="#icon-list"></use>
-          </svg>
+
           Summary
           <div class="badge">{{ raoSummaryLineItem.length }}</div>
         </div>
@@ -207,13 +189,13 @@
         </div>
         <div class="button-group" style="margin-top: 0;">
           <button class="btn">
-            <svg class="svg-icon svg-icon--sm">
+            <svg class="">
               <use xlink:href="#icon-upload"></use>
             </svg>
             Upload
           </button>
           <button class="btn">
-            <svg class="svg-icon svg-icon--sm">
+            <svg class="">
               <use xlink:href="#icon-link"></use>
             </svg>
             Add Link
@@ -259,9 +241,7 @@
       <button class="btn">Cancel</button>
       <button class="btn">Reset</button>
       <button class="btn btn-primary">
-        <svg class="svg-icon svg-icon--sm">
-          <use xlink:href="#icon-save"></use>
-        </svg>
+
         Save
       </button>
     </div>

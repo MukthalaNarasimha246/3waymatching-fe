@@ -1,0 +1,85 @@
+<div class="content-section">
+  <div class="content-header">
+    <div class="header-title">
+      Purchasing Document List
+
+      <div class="content-controls" style="color: black;">
+        <div class="control-btn">For {{invoiceData.company_name}}</div>
+        <!-- <div class="control-btn">Perform Write-Off</div>
+        <div class="control-btn active">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-eye"></use>
+          </svg>
+        </div>
+        <div class="control-btn">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-search"></use>
+          </svg>
+        </div>
+        <div class="control-btn">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-cog"></use>
+          </svg>
+        </div>
+        <div class="control-btn">
+          <svg class="svg-icon">
+            <use xlink:href="#icon-export"></use>
+          </svg>
+          <svg class="svg-icon" style="width: 10px; height: 10px; margin-left: 4px;">
+            <use xlink:href="#icon-chevron-down"></use>
+          </svg>
+        </div>
+      </div> -->
+    </div>
+    </div>
+
+  <div class="table-section">
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <!-- <th class="checkbox-cell">
+              <input type="checkbox" class="checkbox" />
+            </th> -->
+            <!-- <th>S.No</th> -->
+            <th>Purchasing Document</th>
+            <!-- <th>Purch...</th> -->
+            <th>PO Date</th>
+            <th>Total Amount</th>
+            <th>Create Date</th>
+            <!-- <th>Invoice Receipt Amount</th> -->
+            <!-- <th>Supplier</th> -->
+            <th>Action</th>
+          </tr>
+        </thead>
+        <!-- {{get_invoice_po_match_data | json}} -->
+        <tbody>
+          <tr *ngFor="let item of po_details_list; let i = index">
+            <!-- <td>{{i+1}}</td> -->
+            <td> {{item['po_number']}}</td>
+            <td>{{item['po_date']}}</td>
+            <td>{{item['total_amount']}}</td>
+            <td>{{item['updated_at']}}</td>
+            <td>
+              <div style="display: flex; gap: 10px">
+                <button class="btn-review">
+                  <svg class="icon-sm" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button class="btn-review" (click)="addToInvoice(item)" style="border: solid 1px #5a25dc; padding: 1px 4px; border-radius: 17px; font-size: 12px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                    <path d="M12 5V19" stroke="#5925DC" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M5 12H19" stroke="#5925DC" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  ADD
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

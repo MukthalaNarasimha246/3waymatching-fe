@@ -10,7 +10,6 @@ export class ProjectsService {
   baseUrlProjects = environment.pupayUrl
   baseUrlIdpUrlUpload = environment.idpUrlUpload
   basedUrlIdfyService = environment.idfyService
-  basedUrlOllamaService = environment.ollamaService
 
   constructor(private http: HttpClient) { }
 
@@ -135,9 +134,6 @@ export class ProjectsService {
     return this.http.get(`${this.baseUrlProjects}/compare_invoice_ewaybill_by_number/${invoice_id}`, { headers: this.getHeaders() })
   }
 
-
-
-
   clasification_Update_Data(data: any) {
     // return this.http.post(environment.url + 'users/register', data)
     return this.http.put(`${this.baseUrlProjects}/classification_details/${data['image']}/${data['top_label']}`, {}, { headers: this.getHeaders() })
@@ -146,6 +142,10 @@ export class ProjectsService {
   get_progress_bar_count(batchId: any) {
     // return this.http.post(environment.url + 'users/register', data)
     return this.http.get(`${this.baseUrlProjects}/progress-files/${batchId}`, { headers: this.getHeaders_connectr() })
+  }
+
+  extracte_image(data: any) {
+    return this.http.post(`${this.baseUrlIdpUrlUpload}/extracte_image`, data, { headers: this.getHeaders_connectr() });
   }
 
 
@@ -272,17 +272,17 @@ export class ProjectsService {
     return this.http.get<Document>(`${this.basedUrlIdfyService}/verify-bank/${bank_no}/${ifsc_code}`);
   }
 
-
-
-  extracte_image(data: any) {
-    return this.http.post(`${this.baseUrlIdpUrlUpload}/extracte_image`, data, { headers: this.getHeaders_connectr() });
-  }
-
-
   updateLLMParseJson(fileId: string, manualJson: any) {
     return this.http.put(`${this.baseUrlIdpUrlUpload}/update_llm_parse_json/${fileId}`, {
       manual_json: manualJson,
     });
   }
+
+
+
+
+
+
+
 
 }

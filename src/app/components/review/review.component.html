@@ -1,51 +1,48 @@
-<div class="main-review">
-    <div class="cases-header">
-        <h2>Review</h2>
-        <!-- <button class="btn-primary" >
-            <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg> Create New Case
-        </button> -->
+<div class="main-review table-container">
+
+  <div class="page-header">
+
+    <h1 class="page-title">Review</h1>
+
+
+  </div>
+  <div class="org-chart-container">
+    <div class="org-chart">
+      <ng-container *ngTemplateOutlet="orgChartTemplate; context: { $implicit: orgChartData }"></ng-container>
     </div>
-    
-    <div class="org-chart-container">
-        <div class="org-chart">
-          <ng-container *ngTemplateOutlet="orgChartTemplate; context: { $implicit: orgChartData }"></ng-container>
+  </div>
+
+  <!-- Organization Chart Node Template -->
+  <ng-template #orgChartTemplate let-node>
+    <div class="org-level">
+      <!-- Current Node -->
+      <div class="org-node-container">
+        <div class="org-node">
+          <div class="avatar-container">
+            <div class="avatar" [ngStyle]="{'background-image': node.imageUrl ? 'url(' + node.imageUrl + ')' : 'none'}">
+              <span *ngIf="!node.imageUrl">{{getInitials(node.name)}}</span>
+            </div>
+          </div>
+          <div class="node-details">
+            <div class="node-name">{{node.name}}</div>
+            <div class="node-title">{{node.title}}</div>
+            <div *ngIf="node.company" class="node-company">{{node.company}}</div>
+          </div>
         </div>
       </div>
-      
-      <!-- Organization Chart Node Template -->
-      <ng-template #orgChartTemplate let-node>
-        <div class="org-level">
-          <!-- Current Node -->
-          <div class="org-node-container">
-            <div class="org-node">
-              <div class="avatar-container">
-                <div class="avatar" [ngStyle]="{'background-image': node.imageUrl ? 'url(' + node.imageUrl + ')' : 'none'}">
-                  <span *ngIf="!node.imageUrl">{{getInitials(node.name)}}</span>
-                </div>
-              </div>
-              <div class="node-details">
-                <div class="node-name">{{node.name}}</div>
-                <div class="node-title">{{node.title}}</div>
-                <div *ngIf="node.company" class="node-company">{{node.company}}</div>
-              </div>
+
+      <!-- Children Nodes -->
+      <div *ngIf="hasChildren(node)" class="org-children-container">
+        <div class="org-children-connector"></div>
+        <div class="org-children">
+          <ng-container *ngFor="let child of node.children; let i = index; let last = last; let first = first">
+            <div class="org-child-branch" [ngClass]="{'first': first, 'last': last}">
+              <div class="org-vertical-line"></div>
+              <ng-container *ngTemplateOutlet="orgChartTemplate; context: { $implicit: child }"></ng-container>
             </div>
-          </div>
-          
-          <!-- Children Nodes -->
-          <div *ngIf="hasChildren(node)" class="org-children-container">
-            <div class="org-children-connector"></div>
-            <div class="org-children">
-              <ng-container *ngFor="let child of node.children; let i = index; let last = last; let first = first">
-                <div class="org-child-branch" [ngClass]="{'first': first, 'last': last}">
-                  <div class="org-vertical-line"></div>
-                  <ng-container *ngTemplateOutlet="orgChartTemplate; context: { $implicit: child }"></ng-container>
-                </div>
-              </ng-container>
-            </div>
-          </div>
+          </ng-container>
         </div>
-      </ng-template>
+      </div>
+    </div>
+  </ng-template>
 </div>

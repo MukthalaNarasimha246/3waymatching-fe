@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-ewaybill',
@@ -6,16 +6,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './ewaybill.component.scss'
 })
 export class EwaybillComponent {
-  @Input() data: any = {}
-
-
-
-  ngOnInit() {
-    console.log(this.data, 'POO Details');
-
-
-
-  }
-
 
 }

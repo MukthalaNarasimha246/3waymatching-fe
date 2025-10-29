@@ -3,7 +3,6 @@ import { ProjectsService } from '../../../services/projects.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonServiceService } from '../../../services/common-service.service';
-import { AuthService } from '../../../services/auth.service';
 
 
 @Component({
@@ -18,17 +17,14 @@ export class ProjectComponent {
   selectedTab = 'file';
   uploadedFiles: File[] = [];
   role: any
-  username: any
   projectForm!: FormGroup;
+  contented_type: any = 'table'
 
-  constructor(private projectServices: ProjectsService, private authService: AuthService, private router: Router, private fb_builder: FormBuilder, private _common_service: CommonServiceService) { }
+  constructor(private projectServices: ProjectsService, private router: Router, private fb_builder: FormBuilder, private _common_service: CommonServiceService) { }
 
   ngOnInit(): void {
     this.renderProjectForm()
     this.role = localStorage.getItem('role')
-    this.username = localStorage.getItem('username')
-    console.log('Calling the ngOnInit Functiona');
-
     // Initialization logic can go here
     this.entities_user(localStorage.getItem('userId'), this.role);
     localStorage.removeItem('enableReconciliation')
@@ -99,12 +95,11 @@ export class ProjectComponent {
 
   connector(value: any) {
     // alert(id)
+    localStorage.setItem('entityId', JSON.stringify(value));
     if (value.is_project_active) {
       var data = {
         id: value.id,
       }
-
-      localStorage.setItem('project_id', value.id)
 
       this.projectServices.connector(data).subscribe((response: any) => {
         console.log('Connector response', response);
@@ -112,7 +107,7 @@ export class ProjectComponent {
         localStorage.setItem('authToken', response.access_token);
         this.router.navigate(['/data-clasification']); // Navigate to the flow screen after fetching connector data
         // Handle successful connector retrieval here, e.g., display the data
-        localStorage.setItem('enableReconciliation', 'true');
+        // localStorage.setItem('enableReconciliation', 'true');
 
       })
     } else {
@@ -175,35 +170,9 @@ export class ProjectComponent {
 
   }
 
-
-  dropdownOpen = false;
-
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
+  showProjectView(type: any) {
+    this.contented_type = type
   }
-
-  onOptionSelect(option: string) {
-    this.dropdownOpen = false;
-    switch (option) {
-      case 'profile':
-        console.log('Navigating to profile...');
-        // this.router.navigate(['/profile']);
-        break;
-      case 'settings':
-        console.log('Opening settings...');
-        // this.router.navigate(['/settings']);
-        break;
-      case 'logout':
-        console.log('Logging out...');
-        this.authService.logout()
-        localStorage.clear();
-        window.location.href = '/login';
-
-        // this.authService.logout();
-        break;
-    }
-  }
-
 
 
   // Add any additional methods or properties needed for the component

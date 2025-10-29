@@ -2,90 +2,90 @@
   "hash": "eb6a247b",
   "configHash": "c1a72068",
   "lockfileHash": "b5cd8680",
-  "browserHash": "065c6039",
+  "browserHash": "3d19139c",
   "optimized": {
     "@angular/animations": {
       "src": "../../../../../node_modules/@angular/animations/fesm2022/animations.mjs",
       "file": "@angular_animations.js",
-      "fileHash": "ee9832a7",
+      "fileHash": "9d3a7f07",
       "needsInterop": false
     },
     "@angular/common": {
       "src": "../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "d23cb401",
+      "fileHash": "b3187ded",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "83eeb49e",
+      "fileHash": "b47ae402",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "0cc74837",
+      "fileHash": "7b783299",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "fba2b3d9",
+      "fileHash": "acfbcd47",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "3a3b2dd5",
+      "fileHash": "6ec45a6e",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "35226add",
+      "fileHash": "d85c3901",
       "needsInterop": false
     },
     "bpmn-js/lib/Modeler": {
       "src": "../../../../../node_modules/bpmn-js/lib/Modeler.js",
       "file": "bpmn-js_lib_Modeler.js",
-      "fileHash": "23d696bd",
+      "fileHash": "5a052505",
       "needsInterop": false
     },
     "echarts": {
       "src": "../../../../../node_modules/echarts/index.js",
       "file": "echarts.js",
-      "fileHash": "ddf74fcb",
+      "fileHash": "b51d75b1",
       "needsInterop": false
     },
     "ngx-echarts": {
       "src": "../../../../../node_modules/ngx-echarts/fesm2022/ngx-echarts.mjs",
       "file": "ngx-echarts.js",
-      "fileHash": "ec9286b7",
-      "needsInterop": false
-    },
-    "ngx-json-viewer": {
-      "src": "../../../../../node_modules/ngx-json-viewer/fesm2020/ngx-json-viewer.mjs",
-      "file": "ngx-json-viewer.js",
-      "fileHash": "1363d705",
+      "fileHash": "dd084908",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "4f18d7b9",
+      "fileHash": "d69ad3c8",
       "needsInterop": false
     },
     "sweetalert2": {
       "src": "../../../../../node_modules/sweetalert2/dist/sweetalert2.esm.all.js",
       "file": "sweetalert2.js",
-      "fileHash": "f5254aec",
+      "fileHash": "13045ef3",
+      "needsInterop": false
+    },
+    "ngx-json-viewer": {
+      "src": "../../../../../node_modules/ngx-json-viewer/fesm2020/ngx-json-viewer.mjs",
+      "file": "ngx-json-viewer.js",
+      "fileHash": "076cf287",
       "needsInterop": false
     },
     "ngx-markdown": {
       "src": "../../../../../node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs",
       "file": "ngx-markdown.js",
-      "fileHash": "5720238c",
+      "fileHash": "a253a2a9",
       "needsInterop": false
     }
   },

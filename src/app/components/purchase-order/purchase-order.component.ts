@@ -1,7 +1,6 @@
-import { Component, ElementRef, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, Output,EventEmitter, ViewChild } from '@angular/core';
 import { ProjectsService } from '../../services/projects.service';
 import { GstinStateCode } from '../../constant/utility';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-purchase-order',
@@ -12,26 +11,24 @@ export class PurchaseOrderComponent {
   activeTab: string = 'po'; // Default active tab
   data: any;
   poLineItem: any;
-  verificationStatus: any = 'not_verified';
-  isVerifying: boolean = false
+  verificationStatus:any = 'not_verified';
+  isVerifying:boolean = false
 
-  @Input() poDetails: any = {}
+  @Input()  poDetails: any = {}
   supplierDetails: any;
   buyerDetails: any;
   shippingDetails: any;
   summaryLineItem: any;
   termsAndConditions: any;
-  @Input() item: any = '';
+  @Input() item:any = '';
 
   @Output() isLoader = new EventEmitter()
 
-  @Output() updated_data = new EventEmitter()
+  image_path:any
+  image_path_image:any
+    searchInfoextracted:any;
 
-  image_path: any
-  image_path_image: any
-  searchInfoextracted: any;
-
-  @ViewChild('canvas', { static: false }) canvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('canvas', { static: false }) canvas!: ElementRef<HTMLCanvasElement>;
   searchText: string = 'INVOICE ID';
   searchText1: string = 'romashka';
   imageSrc: any; // Replace with your image
@@ -42,11 +39,11 @@ export class PurchaseOrderComponent {
   onTabClick(tab: string): void {
     this.activeTab = tab;
   }
-  constructor(private projectService: ProjectsService) { }
+  constructor(private projectService: ProjectsService) {}
   ngOnInit() {
-    console.log(this.poDetails, 'POO Details');
-
-
+    console.log(this.poDetails,'POO Details');
+    
+    
 
   }
   // getData() {
@@ -74,6 +71,7 @@ export class PurchaseOrderComponent {
   }
   loadImage() {
     // alert("Hi there")
+    console.log("this.imageSrc;", this.image_path)
     const canvas = this.canvas.nativeElement;
     this.ctx = canvas.getContext('2d')!;
     const img = new Image();
@@ -86,13 +84,13 @@ export class PurchaseOrderComponent {
     };
   }
 
-  testing() {
+  testing(){
     // console.log("image_path", this
     // return this.searchInfoextracted =
     this.projectService.bbox_api(this.image_path_image).subscribe((data: any) => {
       console.log("testing", data)
       // this.imageSrc = data[0].image;
-      this.detectedWords = JSON.parse(data[0].bbox);
+      this.detectedWords =JSON.parse(data[0].bbox);
       console.log("detectedWords", this.detectedWords)
       return this.detectedWords
     })
@@ -102,65 +100,65 @@ export class PurchaseOrderComponent {
 
 
 
-  gstinVerfiedObject: any = null
-  verifie_loader_text = ''
-
-
-  verifyGSTIN(gstin: any) {
-    this.isVerifying = true
-    this.isLoader.emit(true)
-    this.verifie_loader_text = 'Verifying the GSTIN number'
-
-    this.projectService.verifyGstin(gstin).subscribe({
-      next: (res: any) => {
-        console.log(res, 'response');
-        this.gstinVerfiedObject = res?.result
-        this.verificationStatus = res?.result.status
-        this.isVerifying = false
-        this.isLoader.emit(false)
-        this.verifie_loader_text = ''
-      },
-      error: (erro) => {
-        console.log(erro);
-        this.isVerifying = false
-        this.isLoader.emit(false)
-        this.verifie_loader_text = ''
-
-      }
-    })
-  }
-
-
-  panVerifiedObject: any = null;
+    gstinVerfiedObject:any = null
+    verifie_loader_text = ''
+  
+  
+    verifyGSTIN(gstin:any) {
+      this.isVerifying = true
+       this.isLoader.emit(true)
+      this.verifie_loader_text = 'Verifying the GSTIN number'
+  
+      this.projectService.verifyGstin(gstin).subscribe({
+        next:(res:any)=>{
+          console.log(res,'response');
+          this.gstinVerfiedObject = res?.result
+          this.verificationStatus = res?.result.status
+          this.isVerifying = false
+          this.isLoader.emit(false)
+          this.verifie_loader_text = ''
+        },
+        error:(erro)=>{
+          console.log(erro);
+          this.isVerifying = false
+           this.isLoader.emit(false)
+          this.verifie_loader_text = ''
+  
+        }
+      })
+    }
+  
+  
+    panVerifiedObject: any = null;
   verificationStatusPan: any = null;
-
+  
   verifyPAN(pan: string) {
     this.isVerifying = true
-    this.isLoader.emit(true)
+      this.isLoader.emit(true)
     this.verifie_loader_text = 'Verifying the PAN number'
     this.projectService.verifyPan(pan).subscribe({
       next: (res: any) => {
         console.log(res, 'PAN verification response');
         this.panVerifiedObject = res?.result?.details
         this.verificationStatusPan = res?.result?.status;
-        this.isVerifying = false
-        this.isLoader.emit(false)
-        this.verifie_loader_text = ''
+         this.isVerifying = false
+          this.isLoader.emit(false)
+          this.verifie_loader_text = ''
       },
       error: (err) => {
         console.log(err);
-        this.isVerifying = false
-        this.isLoader.emit(false)
+         this.isVerifying = false
+          this.isLoader.emit(false)
 
-        this.verifie_loader_text = ''
+          this.verifie_loader_text = ''
       }
     });
   }
-
-
+  
+  
   showDatePicker = false;
   selectedDate = '';
-
+  
   onSelectOption(event: any) {
     const value = event.target.value;
     if (value === 'date') {
@@ -169,138 +167,52 @@ export class PurchaseOrderComponent {
       this.showDatePicker = false; // Keep showing select
     }
   }
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
   getStateInfo(gstin: string) {
     const gstinCodes = new GstinStateCode();
     const code = gstin?.substring(0, 2); // first 2 digits
     const state = gstinCodes?.gstinstateCode[code] || "Unknown State".toLowerCase()
-
-
+  
+    console.log(code, 'state code');
+    console.log(state, 'state name');
+  
     return { code, state };
   }
-
-  getStateCodeValidation(stateCode: any, gstin: any) {
+  
+  getStateCodeValidation(stateCode:any,gstin:any){
     const code = gstin?.substring(0, 2);
-    return code == stateCode ? true : false
+    return code == stateCode ? true:false
   }
 
 
   memsVerifiedObject: any = null;
-  verificationStatusMems: any = null;
+verificationStatusMems: any = null;
 
 
-  verifyMems(pan: string) {
-    this.isVerifying = true
-    this.verifie_loader_text = 'Verifying the PAN number'
-    this.projectService.verifyMems(pan).subscribe({
-      next: (res: any) => {
-        console.log(res, 'UAN verification response');
-        this.memsVerifiedObject = res
-        this.verificationStatusMems = res?.status;
-        this.isVerifying = false
+verifyMems(pan: string) {
+  this.isVerifying = true
+  this.verifie_loader_text = 'Verifying the PAN number'
+  this.projectService.verifyMems(pan).subscribe({
+    next: (res: any) => {
+      console.log(res, 'UAN verification response');
+      this.memsVerifiedObject = res
+      this.verificationStatusMems = res?.status;
+       this.isVerifying = false
         this.verifie_loader_text = ''
-      },
-      error: (err) => {
-        console.log(err);
-        this.isVerifying = false
+    },
+    error: (err) => {
+      console.log(err);
+       this.isVerifying = false
         this.verifie_loader_text = ''
-      }
-    });
-  }
-
-  // TypeScript
-  isCollapsed: any = {}; // store collapse state per section
-
-  toggleCollapse(section: string) {
-    // toggle the current state
-    this.isCollapsed[section] = !this.isCollapsed[section];
-  }
-  submit_po_details(data: any) {
-    console.log(data, 'dataa');
-  }
+    }
+  });
+}
 
 
-
-
-
-  editableInvoice: any = {};
-  isEditMode: boolean = false;
-  isEditBillMode: boolean = false
-  isEditSupplierMode: boolean = false
-  isEditBankDetailMode: boolean = false
-
-
-  enableEdit() {
-    this.isEditMode = true;
-  }
-
-  cancelEdit() {
-    this.isEditMode = false;
-  }
-
-  disableEditMode() {
-    this.isEditMode = false
-  }
-
-
-  enableEditBill() {
-    this.isEditBillMode = true;
-  }
-
-  cancelEditBill() {
-    this.isEditBillMode = false;
-  }
-
-  disableEditModeBill() {
-    this.isEditBillMode = false
-  }
-
-
-  enableEditSupplier() {
-    this.isEditSupplierMode = true;
-  }
-
-  cancelEditBillSupplier() {
-    this.isEditSupplierMode = false;
-  }
-
-  disableEditModeBillSupplier() {
-    this.isEditSupplierMode = false
-  }
-
-
-  enableEditBankDetail() {
-    this.isEditBankDetailMode = true;
-  }
-
-  cancelEditBillBankDetail() {
-    this.isEditBankDetailMode = false;
-  }
-
-  disableEditModeBillBankDetail() {
-    this.isEditBankDetailMode = false
-  }
-
-
-  reset_variable() {
-
-    this.isEditMode = false;
-    this.isEditBillMode = false
-    this.isEditSupplierMode = false
-    this.isEditBankDetailMode = false
-  }
-
-
-  saveinvoicedetails(data: any) {
-    console.log('Updated invoice details:',);
-    console.log(this.poDetails, 'podetails');
-    this.updated_data.emit(this.poDetails)
-    this.reset_variable()
-  }
 
 }

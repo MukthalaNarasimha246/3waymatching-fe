@@ -1,110 +1,172 @@
-<section class="cards-section">
+<div class="main-section">
+  <div class="page-header">
+    <h1 class="page-title">{{role == 'admin' ? "Entity List" : "Projects List"}}</h1>
 
-  <div class="cases-header">
-    <div class="logo-container">
-      <div>
-        <h2><img src="../../../../assets/images/logo.png" class="logo-image" alt=""></h2>
-      </div>
-
-      <h2 class="main-title">{{role == 'admin' ? "Entity List" : "Projects"}}</h2>
-
-    </div>
-
-
-    <div class="user" (click)="toggleDropdown()">
-      <div class="avatar">
-        <img src="https://cdn-icons-png.flaticon.com/512/10337/10337609.png" class="logo-image" alt="User" />
-      </div>
-      <div class="logo-container">
-        <p class="name">{{ username | titlecase }} ({{ role | titlecase }})</p>
-      </div>
-
-      <!-- Dropdown Menu -->
-      <div class="dropdown" *ngIf="dropdownOpen">
-        <ul>
-          <li (click)="onOptionSelect('profile')">Profile</li>
-          <li (click)="onOptionSelect('settings')">Settings</li>
-          <li (click)="onOptionSelect('logout')">Logout</li>
-        </ul>
-      </div>
-    </div>
-
-
-
-    <button class="btn-primary" (click)="toggleAddCase()" *ngIf="role == 'admin'">
-      <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg> Create Company/Entity
-    </button>
   </div>
+  <div class="table-container">
+    <div class="table-header">
+      <span class="table-title">Active Projects</span>
+      <div class="table-actions">
+        <button class="action-btn" (click)="toggleAddCase()" *ngIf="role == 'admin'">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+          </svg>
+          Add
+        </button>
+        <!-- <button class="action-btn">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24">
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z">
+            </path>
+          </svg>
+          Edit
+        </button>
+        <button class="action-btn">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+          </svg>
+          Delete
+        </button>
+        <button class="action-btn">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+          </svg>
+          Export
+        </button> -->
+        <!-- <button class="action-btn">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24">
+            <path d="M3 5h2v14H3zm4 0h2v14H7zm4 0h2v14h-2zm4 0h2v14h-2zm4 0h2v14h-2z"></path>
+          </svg>
+          Count: 24
+        </button> -->
+        <div class="view-toggle">
+          <button class="view-btn " [ngClass]="contented_type =='card_view'?'active':''"
+            (click)="showProjectView('card_view')" title="Card View">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24">
+              <path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"></path>
+            </svg>
 
+          </button>
+          <button class="view-btn" [ngClass]="contented_type =='table'?'active':''" (click)="showProjectView('table')"
+            title="Table View">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24">
+              <path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"></path>
+            </svg>
 
-
-
-
-
-
-  <div class="cards-grid">
-    <div class="project-card" (click)="enableRouterReconciliation()">
-      <div class="card-background"></div>
-      <div class="card-content">
-        <div class="badge">
-          <span class="dot"></span>In Progress
+          </button>
         </div>
-
-        <div class="controls">
-          <!-- <div class="visibility-btn">
-              <i class="far fa-eye"></i>
-              Public
-            </div> -->
-          <div class="menu-btn">
-            <i class="fas fa-ellipsis-v"></i>
+      </div>
+    </div>
+    <!-- (click)="enableRouterReconciliation()" -->
+    <!-- Project Cards View -->
+    <div id="projectCardsView" class="projects-grid" *ngIf="contented_type == 'table'">
+      <div class="project-card" routerLink="/projects_flow_screen" *ngFor="let entity of entities_data"
+        (click)="connector(entity)">
+        <div class="project-card-header">
+          <div>
+            <div class="project-card-title">{{entity?.name}}</div>
+            <div class="project-card-client">TechCorp</div>
+          </div>
+          <div class="project-card-menu">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+              </path>
+            </svg>
           </div>
         </div>
-
-        <div class="card-header">
-          <div class="logo">P</div>
-          <div class="project-info">
-            <div class="project-name">Purchase to Pay</div>
-            <div class="project-date">
-              <i class="far fa-calendar-alt"></i>
-              Started on Mar 15, 2026
-            </div>
+        <div class="project-card-content">
+          <div class="project-card-description">
+            {{entity?.description}}
           </div>
-        </div>
-
-
-
-        <div class="card-footer">
-          <div class="team-members">
-            <div class="members">
-              <div class="member">
-                <img src="/api/placeholder/40/40" alt="Team member">
-              </div>
-
-
-              <div class="member more-indicator">+3</div>
-            </div>
-          </div>
-          <div class="domain-tag">
-
-            <b> 18</b>
-          </div>
-        </div>
-
-        <!-- <div class="progress-container">
-            <div class="progress-header">
-              <div class="progress-title">Project Completion</div>
-              <div class="progress-percentage">68%</div>
+          <div class="project-progress">
+            <div class="project-progress-header">
+              <span>Progress</span>
+              <span>67%</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill"></div>
+              <div class="progress-fill" style="width: 67%"></div>
             </div>
-          </div> -->
+          </div>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z">
+                </path>
+              </svg>
+              8
+            </div>
+            <div class="project-meta-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z">
+                </path>
+              </svg>
+              {{ entity?.updated_at | date: 'MMM d' }}
+            </div>
+          </div>
+          <span class="status-badge status-progress">In Progress</span>
+        </div>
       </div>
+
+
+
+
+
     </div>
-    <ng-container *ngIf="role == 'admin'">
+
+    <!-- Project Table View (Hidden by default) -->
+    <div class="projects-table" *ngIf="contented_type == 'card_view'">
+      <table id="projectTableView">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Project Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created at</th>
+            <th *ngIf="role == 'admin'">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entity of entities_data">
+            <td>#2401</td>
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.description}}</td>
+            <td><span class="status-badge status-progress">In Progress</span></td>
+
+            <td> {{ entity?.updated_at | date: 'MMM d' }}</td>
+            <td *ngIf="role == 'admin'">
+              <svg class="icon-svg-sm table-action-icon" viewBox="0 0 24 24">
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z">
+                </path>
+              </svg>
+              <svg class="icon-svg-sm table-action-icon" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+              </svg>
+              <svg class="icon-svg-sm table-action-icon" viewBox="0 0 24 24">
+                <path
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z">
+                </path>
+              </svg>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<section class="cards-section">
+
+
+  <!-- <ng-container *ngIf="role == 'admin'">
       <div class="project-card" routerLink="/projects_flow_screen" *ngFor="let entity of entities_data"
         (click)="entityId(entity)">
         <div class="card-background"></div>
@@ -114,10 +176,7 @@
           </div>
 
           <div class="controls">
-            <!-- <div class="visibility-btn">
-              <i class="far fa-eye"></i>
-              Public
-            </div> -->
+       
             <div class="menu-btn">
               <i class="fas fa-ellipsis-v"></i>
             </div>
@@ -149,65 +208,11 @@
           </div>
         </div>
       </div>
-    </ng-container>
-    <ng-container *ngIf="role == 'user'">
-      <div class="project-card" *ngFor="let entity of entities_data" (click)="connector(entity)">
-        <div class="card-background"></div>
-        <div class="card-content">
-          <div class="badge" [ngStyle]="{
-       'color': entity.is_project_active ? '#5925dc' : 'red',
-     }">
-            <span class="dot" [ngStyle]="{
-       'background-color': entity.is_project_active ? '#5925dc' : 'red'
-     }"></span>{{entity.is_project_active?"In Progress":"Inactive"}}
-          </div>
-
-          <div class="controls">
-            <!-- <div class="visibility-btn">
-              <i class="far fa-eye"></i>
-              Public
-            </div> -->
-            <div class="menu-btn">
-              <i class="fas fa-ellipsis-v"></i>
-            </div>
-          </div>
-
-          <div class="card-header">
-            <div class="logo">P</div>
-            <div class="project-info">
-              <div class="project-name">{{entity.name}}</div>
-              <div class="project-date">
-                <i class="far fa-calendar-alt"></i>
-                Started on {{entity.created_at | date:'shortDate'}}
-              </div>
-            </div>
-          </div>
+    </ng-container> -->
 
 
 
-          <div class="card-footer">
-            <div class="team-members">
-              <div class="members">
-                <div class="member">
-                  <img src="/api/placeholder/40/40" alt="Team member">
-                </div>
 
-
-                <div class="member more-indicator">+3</div>
-              </div>
-            </div>
-            <div class="domain-tag">
-
-              <b> 18</b>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-
-
-
-  </div>
 </section>
 
 <div class="side-panel" [class.active]="isAddCaseOpen">
